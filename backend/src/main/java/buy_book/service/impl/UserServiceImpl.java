@@ -85,7 +85,7 @@ public class UserServiceImpl implements UserService {
         if (request.getRole() != null) user.setRole(request.getRole());
         if (request.getPassword() != null && !request.getPassword().isBlank())
             user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setActive(request.isActive());
+        user.setActive(request.isActive()); // @JsonProperty("isActive") đảm bảo nhận đúng từ JSON
 
         return toResponse(userRepository.save(user));
     }

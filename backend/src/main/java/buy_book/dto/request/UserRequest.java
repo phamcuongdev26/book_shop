@@ -1,6 +1,7 @@
 package buy_book.dto.request;
 
 import buy_book.constant.Role;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -26,5 +27,7 @@ public class UserRequest {
     String address;
     String avatarUrl;
     Role role;
+
+    @JsonProperty("isActive")
     boolean isActive;
 }

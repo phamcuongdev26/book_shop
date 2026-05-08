@@ -1,6 +1,7 @@
 package buy_book.controller;
 
 import buy_book.constant.OrderStatus;
+import buy_book.dto.request.AdminCreateOrderRequest;
 import buy_book.dto.request.UpdateOrderStatusRequest;
 import buy_book.dto.response.ApiResponse;
 import buy_book.dto.response.OrderResponse;
@@ -19,6 +20,16 @@ import java.util.List;
 public class AdminOrderController {
 
     private final AdminOrderService adminOrderService;
+
+    @PostMapping
+    public ResponseEntity<ApiResponse<OrderResponse>> createOrder(
+            @Valid @RequestBody AdminCreateOrderRequest request) {
+        return ResponseEntity.ok(ApiResponse.<OrderResponse>builder()
+                .code(200)
+                .message("Tạo đơn hàng thành công")
+                .data(adminOrderService.createOrder(request))
+                .build());
+    }
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<OrderResponse>>> getAllOrders(

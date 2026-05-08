@@ -90,6 +90,21 @@ public class CartAndOrderController {
                 .build());
     }
 
+    @PostMapping("/api/orders/checkout-all")
+    public ResponseEntity<ApiResponse<CheckoutAllResponse>> checkoutAll(
+            @Valid @RequestBody CheckoutRequest request,
+            @AuthenticationPrincipal Jwt jwt) {
+        CheckoutAllResponse result = orderService.checkoutAll(jwt.getSubject(), request);
+        String message = result.getSkippedItems().isEmpty()
+                ? "Đặt hàng thành công"
+                : "Đặt hàng thành công (" + result.getSkippedItems().size() + " sản phẩm bị bỏ qua)";
+        return ResponseEntity.ok(ApiResponse.<CheckoutAllResponse>builder()
+                .code(200)
+                .message(message)
+                .data(result)
+                .build());
+    }
+
     @GetMapping("/api/orders")
     public ResponseEntity<ApiResponse<List<OrderResponse>>> getOrderHistory(
             @AuthenticationPrincipal Jwt jwt) {

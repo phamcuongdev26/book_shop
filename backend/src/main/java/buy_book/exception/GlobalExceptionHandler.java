@@ -1,6 +1,7 @@
 package buy_book.exception;
 
 import buy_book.dto.response.ApiResponse;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -16,6 +17,16 @@ public class GlobalExceptionHandler {
                 .body(ApiResponse.<Void>builder()
                         .code(errorCode.getCode())
                         .message(errorCode.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ApiResponse<Void>> handleDataIntegrity(DataIntegrityViolationException ex) {
+        return ResponseEntity
+                .status(400)
+                .body(ApiResponse.<Void>builder()
+                        .code(400)
+                        .message("Không thể xóa vì dữ liệu này đang được sử dụng (có đơn hàng, giỏ hàng hoặc dữ liệu liên quan).")
                         .build());
     }
 

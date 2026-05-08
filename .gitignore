@@ -1,10 +1,18 @@
-HELP.md
+# Maven build output
 target/
-.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+.mvn/wrapper/maven-wrapper.jar
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
 
-### STS ###
+# IDE
+.idea/
+*.iws
+*.iml
+*.ipr
+.vscode/
 .apt_generated
 .classpath
 .factorypath
@@ -13,21 +21,20 @@ target/
 .springBeans
 .sts4-cache
 
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-
-### NetBeans ###
+# NetBeans
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
 
-### VS Code ###
-.vscode/
+# Frontend dependencies
+frontend/node_modules/
+frontend/dist/
+
+# Claude
+.claude/settings.local.json
+
+# Misc
+*.class
+*.log

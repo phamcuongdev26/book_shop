@@ -1,6 +1,7 @@
 package buy_book.service;
 
 import buy_book.constant.OrderStatus;
+import buy_book.dto.request.AdminCreateOrderRequest;
 import buy_book.dto.response.OrderResponse;
 
 import java.util.List;
@@ -10,4 +11,5 @@ public interface AdminOrderService {
     List<OrderResponse> getOrdersByStatus(OrderStatus status);
     OrderResponse getOrderById(Long id);
     OrderResponse updateOrderStatus(Long id, OrderStatus status);
+    OrderResponse createOrder(AdminCreateOrderRequest request);
 }
