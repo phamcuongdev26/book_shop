@@ -15,4 +15,7 @@ export const ordersApi = {
 
   adminCreateOrder: (data) =>
     api.post('/api/admin/orders', data),
+
+  createOrder: (data) =>
+    api.post('/api/admin/orders', data),
 }

@@ -10,6 +10,21 @@ export interface CheckoutPayload {
   selectedItemIds?: number[]
 }
 
+export interface AdminCreateOrderItemPayload {
+  bookId: number
+  quantity: number
+}
+
+export interface AdminCreateOrderPayload {
+  username: string
+  items: AdminCreateOrderItemPayload[]
+  shippingAddress: string
+  recipientName: string
+  recipientPhone: string
+  paymentMethod: PaymentMethod
+  note?: string
+}
+
 export const ordersApi = {
   checkout: (data: CheckoutPayload) =>
     api.post<ApiResponse<OrderResponse>>('/api/orders/checkout', data),
@@ -18,9 +33,12 @@ export const ordersApi = {
     api.get<ApiResponse<OrderResponse[]>>('/api/orders'),
 
   // Admin
-  getAllOrders: (params?: { page?: number; size?: number }) =>
-    api.get<ApiResponse<{ content: OrderResponse[]; totalPages: number }>>('/api/admin/orders', { params }),
+  getAllOrders: () =>
+    api.get<ApiResponse<OrderResponse[]>>('/api/admin/orders'),
 
   updateStatus: (orderId: number, status: string) =>
-    api.put(`/api/admin/orders/${orderId}/status`, { status }),
+    api.patch<ApiResponse<OrderResponse>>(`/api/admin/orders/${orderId}/status`, { status }),
+
+  createOrder: (data: AdminCreateOrderPayload) =>
+    api.post<ApiResponse<OrderResponse>>('/api/admin/orders', data),
 }

@@ -46,7 +46,7 @@ const EMPTY_FORM = {
 }
 
 // ── Modal tạo đơn hàng mới ──────────────────────────────────────
-function CreateOrderModal({ onClose, onCreated }) {
+function CreateOrderModal({ onClose, onCreated, users }) {
   const [form, setForm] = useState(EMPTY_FORM)
   const [items, setItems] = useState([])           // [{book, quantity}]
   const [bookSearch, setBookSearch] = useState('')
@@ -56,12 +56,23 @@ function CreateOrderModal({ onClose, onCreated }) {
 
   const set = (field) => (e) => setForm(f => ({ ...f, [field]: e.target.value }))
 
+  const handleSelectUser = (username) => {
+    const user = users.find(u => u.username === username)
+    setForm(f => ({
+      ...f,
+      username,
+      recipientName: user?.fullName || '',
+      recipientPhone: user?.phoneNumber || '',
+      shippingAddress: user?.address || '',
+    }))
+  }
+
   const searchBooks = async (q) => {
     if (!q.trim()) { setBookResults([]); return }
     setSearching(true)
     try {
       const res = await booksApi.search({ keyword: q, size: 8 })
-      setBookResults(res.data.data?.content || res.data.data || [])
+      setBookResults(res.data.result?.content || [])
     } catch { setBookResults([]) }
     finally { setSearching(false) }
   }
@@ -100,7 +111,7 @@ function CreateOrderModal({ onClose, onCreated }) {
 
     setSubmitting(true)
     try {
-      await ordersApi.adminCreateOrder({
+      await ordersApi.createOrder({
         username: form.username,
         items: items.map(i => ({ bookId: i.book.id, quantity: i.quantity })),
         shippingAddress: form.shippingAddress,
@@ -133,13 +144,20 @@ function CreateOrderModal({ onClose, onCreated }) {
 
         <form onSubmit={handleSubmit} className="p-5 space-y-5">
 
-          {/* Username khách hàng */}
+          {/* Chọn khách hàng */}
           <div>
             <label className="block text-xs font-semibold text-gray-600 mb-1">
-              Username khách hàng <span className="text-rose-500">*</span>
+              Khách hàng <span className="text-rose-500">*</span>
             </label>
-            <input value={form.username} onChange={set('username')} placeholder="Nhập username của khách..."
-              className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+            <select value={form.username} onChange={e => handleSelectUser(e.target.value)}
+              className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+              <option value="">-- Chọn khách hàng --</option>
+              {users.map(u => (
+                <option key={u.id} value={u.username}>
+                  {u.fullName ? `${u.fullName} (${u.username})` : u.username}
+                </option>
+              ))}
+            </select>
           </div>
 
           {/* Tìm và thêm sách */}
@@ -156,7 +174,7 @@ function CreateOrderModal({ onClose, onCreated }) {
                 className="w-full pl-9 pr-4 py-2.5 text-sm border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-400"
               />
               {(searching || bookResults.length > 0) && (
-                <div className="absolute top-full mt-1 left-0 right-0 bg-white border border-gray-200 rounded-xl shadow-lg z-20 overflow-hidden max-h-52 overflow-y-auto">
+                <div className="mt-1 border border-gray-200 rounded-xl overflow-hidden max-h-48 overflow-y-auto">
                   {searching && <p className="px-3 py-2 text-xs text-gray-400">Đang tìm...</p>}
                   {bookResults.map(b => {
                     const price = b.discountPrice ?? b.price
@@ -282,16 +300,20 @@ export default function ManageOrders() {
   const [loading, setLoading] = useState(true)
   const [showCreate, setShowCreate] = useState(false)
   const [filterStatus, setFilterStatus] = useState('')
+  const [users, setUsers] = useState([])
 
   const fetchOrders = () => {
     setLoading(true)
     ordersApi.getAllOrders()
-      .then((res) => setOrders(res.data.data || []))
+      .then((res) => setOrders(res.data.result || []))
       .catch(console.error)
       .finally(() => setLoading(false))
   }
 
-  useEffect(() => { fetchOrders() }, [])
+  useEffect(() => {
+    fetchOrders()
+    usersApi.getAll().then(res => setUsers(res.data.result || []))
+  }, [])
 
   const updateStatus = async (orderId, status) => {
     try {
@@ -389,7 +411,7 @@ export default function ManageOrders() {
       </div>
 
       {showCreate && (
-        <CreateOrderModal onClose={() => setShowCreate(false)} onCreated={fetchOrders} />
+        <CreateOrderModal onClose={() => setShowCreate(false)} onCreated={fetchOrders} users={users} />
       )}
     </div>
   )

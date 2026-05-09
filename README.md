@@ -16,7 +16,7 @@ Website bán sách trực tuyến với đầy đủ tính năng: duyệt sách,
 
 ## Cách chạy
 
-### Bước 1 — Tạo database MySQL
+### Bước 1 — Tạo database và import dữ liệu mẫu
 
 ```sql
 CREATE DATABASE book_shop_db
@@ -24,7 +24,13 @@ CREATE DATABASE book_shop_db
   COLLATE utf8mb4_unicode_ci;
 ```
 
-> Dữ liệu mẫu (schema + sách + danh mục + tài khoản) sẽ được **tự động import** khi backend khởi động lần đầu.
+Sau đó import toàn bộ schema + dữ liệu mẫu:
+
+```bash
+mysql -u root -p book_shop_db < backend/src/main/resources/data.sql
+```
+
+> File `data.sql` chứa đầy đủ: bảng, sách, danh mục, tài khoản mẫu.
 
 ### Bước 2 — Cấu hình kết nối database
 
@@ -57,13 +63,16 @@ mvnw.cmd spring-boot:run
 
 Backend chạy tại: **http://localhost:8080**
 
-**Tài khoản mặc định sau khi seed:**
+**Tài khoản mặc định:**
 
-| Username | Password   | Vai trò |
-|----------|------------|---------|
-| admin    | Admin1234  | Admin   |
-| seller1  | 12345678   | Seller  |
-| testuser | 12345678   | User    |
+| Username   | Password   | Vai trò |
+|------------|------------|---------|
+| admin      | Admin1234  | Admin   |
+| levanc     | Pass1234   | User    |
+| phamthid   | Pass1234   | User    |
+| hoangvane  | Pass1234   | User    |
+| tranthib   | Pass1234   | User    |
+| nguyenvana | Pass1234   | User    |
 
 ### Bước 4 — Chạy Frontend
 
@@ -102,5 +111,5 @@ book/
 
 ## Lưu ý
 
-- `data.sql` chạy tự động mỗi lần backend khởi động (DROP + CREATE + INSERT) — phù hợp để demo, không dùng cho production.
+- `data.sql` cần import thủ công một lần duy nhất vào MySQL. Sau đó backend tự quản lý schema qua `ddl-auto: update`.
 - RSA key pair trong `certs/` chỉ dùng cho mục đích học tập.
