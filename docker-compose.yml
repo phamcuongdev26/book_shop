@@ -8,7 +8,7 @@ services:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./data.sql:/docker-entrypoint-initdb.d/01_data.sql
+      - ./backend/src/main/resources/data.sql:/docker-entrypoint-initdb.d/01_data.sql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pbookshop123"]
       interval: 10s
