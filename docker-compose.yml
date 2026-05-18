@@ -1,14 +1,10 @@
 services:
   db:
-    image: mysql:8.0
-    environment:
-      MYSQL_ROOT_PASSWORD: bookshop123
-      MYSQL_DATABASE: book_shop_db
+    image: cuongne26/bookshop-db:latest
     ports:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./backend/src/main/resources/data.sql:/docker-entrypoint-initdb.d/01_data.sql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pbookshop123"]
       interval: 10s
