@@ -220,7 +220,7 @@ public class BookServiceImpl implements BookService {
             case "year_asc"    -> Sort.by("publishYear").ascending();
             case "year_desc"   -> Sort.by("publishYear").descending();
             case "title_asc"   -> Sort.by("title").ascending();
-            default            -> Sort.by("createdAt").descending();
+            default            -> Sort.by("id").descending();
         };
     }
 

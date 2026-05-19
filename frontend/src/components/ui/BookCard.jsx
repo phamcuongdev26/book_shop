@@ -57,7 +57,7 @@ export function BookCard({ book, colorIndex = 0 }) {
 
       <div className="p-3 flex flex-col gap-1 flex-1">
         <p className={`text-xs font-medium ${catColor}`}>{book.categoryName}</p>
-        <h3 className="text-sm font-semibold text-gray-900 line-clamp-2 leading-snug group-hover:text-indigo-700 transition-colors">
+        <h3 className="text-sm font-semibold text-gray-900 line-clamp-3 leading-snug group-hover:text-indigo-700 transition-colors">
           {book.title}
         </h3>
         <p className="text-xs text-gray-400">{book.author}</p>

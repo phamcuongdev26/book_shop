@@ -46,7 +46,7 @@ export default function BookList() {
       : categories.find((c) => c.slug === categorySlug)?.id
 
     const params = {
-      page, size: 10, sortBy,
+      page, size: 20, sortBy,
       categoryId:  resolvedCategoryId,
       hasDiscount: searchParams.get('hasDiscount') === 'true' ? true : undefined,
       sellerName:  shopFilter || undefined,
@@ -55,10 +55,10 @@ export default function BookList() {
     const hasFilter = params.categoryId || params.hasDiscount || params.sellerName
 
     const req = keyword
-      ? booksApi.search({ keyword, page, size: 10 })
+      ? booksApi.search({ keyword, page, size: 20 })
       : hasFilter
         ? booksApi.filter(params)
-        : booksApi.getAll({ page, size: 10, sortBy })
+        : booksApi.getAll({ page, size: 20, sortBy })
 
     req
       .then((res) => {

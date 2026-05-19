@@ -11,14 +11,15 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   sql:
     init:
-      mode: never
-  mvc:
-    pathmatch:
-      matching-strategy: ant_path_matcher
+      mode: always
   jpa:
+    defer-datasource-initialization: true
     hibernate:
       ddl-auto: update
     show-sql: false
     properties:
       hibernate:
         format_sql: false
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher

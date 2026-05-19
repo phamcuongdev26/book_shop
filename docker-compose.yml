@@ -1,6 +1,9 @@
 services:
   db:
-    image: cuongne26/bookshop-db:latest
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: bookshop123
+      MYSQL_DATABASE: book_shop_db
     ports:
       - "3306:3306"
     volumes:
