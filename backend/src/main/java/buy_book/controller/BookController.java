@@ -36,11 +36,18 @@ public class BookController {
     public ResponseEntity<ApiResponse<PageResponse<BookSummaryResponse>>> getAllBooks(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "newest") String sortBy) {
+            @RequestParam(defaultValue = "newest") String sortBy,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) BigDecimal minPrice,
+            @RequestParam(required = false) BigDecimal maxPrice) {
+
+        PageResponse<BookSummaryResponse> result = (categoryId != null || minPrice != null || maxPrice != null)
+                ? bookService.filterBooks(null, null, null, minPrice, maxPrice, categoryId, null, sortBy, page, size, null)
+                : bookService.getAllBooks(page, size, sortBy);
 
         return ResponseEntity.ok(ApiResponse.<PageResponse<BookSummaryResponse>>builder()
                 .code(200)
-                .result(bookService.getAllBooks(page, size, sortBy))
+                .result(result)
                 .build());
     }
 

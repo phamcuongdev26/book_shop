@@ -1,5 +1,6 @@
 SET FOREIGN_KEY_CHECKS=0;
 SET NAMES utf8mb4;
+UPDATE `books` SET `active` = 1 WHERE `status` = 'ACTIVE' AND (`active` = 0 OR `active` IS NULL);
 INSERT IGNORE INTO `users` (`id`, `address`, `avatar_url`, `created_at`, `email`, `full_name`, `is_active`, `password`, `phone_number`, `role`, `updated_at`, `username`) VALUES (2,NULL,NULL,'2026-05-06 19:07:43.925457','test@gmail.com','Test User',1,'$2a$10$3V0ZLBa1Qj7vekTha3y0TuFKyCzTDtUAStUmD7OEGBXbx2enE/VEO',NULL,'USER','2026-05-06 19:07:43.925457','testuser');
 INSERT IGNORE INTO `users` (`id`, `address`, `avatar_url`, `created_at`, `email`, `full_name`, `is_active`, `password`, `phone_number`, `role`, `updated_at`, `username`) VALUES (3,NULL,NULL,'2026-05-06 19:20:00.171009','seller1@gmail.com','Seller One',1,'$2a$10$fEzyT6NBjqJ26YiO2TlDw.CK6jCKtj8Eu/MySIm5ss/mmcvmwSdHy',NULL,'SELLER','2026-05-06 19:20:00.171009','seller1');
 INSERT IGNORE INTO `users` (`id`, `address`, `avatar_url`, `created_at`, `email`, `full_name`, `is_active`, `password`, `phone_number`, `role`, `updated_at`, `username`) VALUES (4,'Hà Nội',NULL,'2026-05-06 20:07:22.064657','nguyenvana@gmail.com','Nguyễn Văn A',1,'$2a$10$w4jkHEKsodmqFY3fQrXkVexjZvUW1/YuGV5/09UTLt.gG0wtH/Ore','0912345678','USER','2026-05-06 20:07:22.064657','nguyenvana');
