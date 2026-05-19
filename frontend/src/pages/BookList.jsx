@@ -106,6 +106,35 @@ export default function BookList() {
         <p className="text-sm text-gray-400 mt-0.5">{totalElements} đầu sách</p>
       </div>
 
+      {/* Category pills */}
+      {!keyword && categories.length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-4">
+          <button
+            onClick={() => setSearchParams((prev) => { prev.delete('categoryId'); prev.delete('categorySlug'); prev.set('page', '0'); return prev })}
+            className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${
+              !searchParams.get('categoryId') && !categorySlug
+                ? 'bg-indigo-600 text-white border-indigo-600'
+                : 'border-gray-200 text-gray-700 hover:border-indigo-400 hover:text-indigo-600 bg-white'
+            }`}
+          >
+            Tất cả
+          </button>
+          {categories.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => setSearchParams((prev) => { prev.set('categoryId', String(cat.id)); prev.delete('categorySlug'); prev.set('page', '0'); return prev })}
+              className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${
+                Number(searchParams.get('categoryId')) === cat.id
+                  ? 'bg-indigo-600 text-white border-indigo-600'
+                  : 'border-gray-200 text-gray-700 hover:border-indigo-400 hover:text-indigo-600 bg-white'
+              }`}
+            >
+              {cat.name}
+            </button>
+          ))}
+        </div>
+      )}
+
       {/* Shop filter */}
       {!keyword && (
         <form onSubmit={handleShopSearch} className="flex gap-2 mb-5 max-w-xs">
