@@ -93,7 +93,7 @@ export default function BookList() {
     ? Number(searchParams.get('categoryId'))
     : categories.find((c) => c.slug === categorySlug)?.id
   const categoryName = categories.find((c) => c.id === resolvedCategoryId)?.name
-  const isFocusedCategoryPage = Boolean((section || categorySlug) && resolvedCategoryId)
+  const isFocusedSectionPage = Boolean(section || categorySlug)
   const pageTitle = keyword
     ? `Kết quả cho "${keyword}"`
     : categoryName || SECTION_TITLES[section] || 'Tất cả sách'
@@ -108,7 +108,7 @@ export default function BookList() {
       </div>
 
       {/* Category pills */}
-      {!keyword && !isFocusedCategoryPage && categories.length > 0 && (
+      {!keyword && !isFocusedSectionPage && categories.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-4">
           <button
             onClick={() => setSearchParams((prev) => { prev.delete('categoryId'); prev.delete('categorySlug'); prev.set('page', '0'); return prev })}
