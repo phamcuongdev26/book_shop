@@ -302,11 +302,11 @@ export default function ProductDetail() {
 
           {/* ── Cột ảnh ── */}
           <div className="space-y-3">
-            <div className="relative w-full aspect-[4/5] bg-gray-50 rounded-2xl overflow-hidden border border-gray-200">
+            <div className="relative w-full aspect-[3/4] bg-white rounded-2xl overflow-hidden border border-gray-200">
               <img
                 src={product.imageUrl || PLACEHOLDER}
                 alt={product.title}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain p-4"
                 onError={(e) => { e.target.src = PLACEHOLDER }}
               />
               {hasDiscount && (

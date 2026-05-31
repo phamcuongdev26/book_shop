@@ -217,9 +217,9 @@ export default function BookDetail() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16">
           <div className="flex justify-center">
-            <div className="w-full max-w-xs aspect-[3/4] bg-gray-50 rounded-xl overflow-hidden border border-gray-200">
+            <div className="w-full max-w-xs aspect-[3/4] bg-white rounded-xl overflow-hidden border border-gray-200">
               <img src={book.imageUrl || PLACEHOLDER} alt={book.title}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain p-3"
                 onError={e => { e.target.src = PLACEHOLDER }} />
             </div>
           </div>
