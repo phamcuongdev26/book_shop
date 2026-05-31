@@ -217,9 +217,9 @@ export default function BookDetail() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16">
           <div className="flex justify-center">
-            <div className="w-full max-w-xs aspect-[3/4] bg-white rounded-xl overflow-hidden border border-gray-200">
+            <div style={{ position: 'relative', width: '100%', maxWidth: '20rem', paddingBottom: '133.33%', overflow: 'hidden', borderRadius: '0.75rem', border: '1px solid #e5e7eb' }}>
               <img src={book.imageUrl || PLACEHOLDER} alt={book.title}
-                className="w-full h-full object-cover"
+                style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                 onError={e => { e.target.src = PLACEHOLDER }} />
             </div>
           </div>
