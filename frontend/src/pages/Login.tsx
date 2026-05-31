@@ -11,7 +11,7 @@ export default function Login() {
   const location = useLocation()
   const from = (location.state as { from?: string })?.from || '/'
 
-  const [form, setForm] = useState({ username: '', password: '' })
+  const [form, setForm] = useState({ email: '', password: '' })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -20,7 +20,7 @@ export default function Login() {
     setError('')
     setLoading(true)
     try {
-      const res = await authApi.login(form.username, form.password)
+      const res = await authApi.login(form.email, form.password)
       login(res.data.result)
       toast.success('Đăng nhập thành công!')
       navigate(from, { replace: true })
@@ -45,14 +45,14 @@ export default function Login() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Tên đăng nhập</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
             <input
-              type="text"
-              value={form.username}
-              onChange={(e) => setForm({ ...form, username: e.target.value })}
+              type="email"
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
               className="input"
-              placeholder="Nhập tên đăng nhập"
-              autoComplete="username"
+              placeholder="Nhập email"
+              autoComplete="email"
               required
             />
           </div>
