@@ -554,11 +554,11 @@ function SectionCard({ book, type, isStatic = false }) {
 
   const inner = (
     <>
-      <div className="relative aspect-[3/4] bg-gradient-to-br from-slate-100 to-slate-50 overflow-hidden">
+      <div className="relative aspect-[3/4] bg-white overflow-hidden">
         <img
           src={book.imageUrl || 'https://placehold.co/300x400?text=No+Image'}
           alt={book.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          className="absolute inset-0 w-full h-full object-contain p-1.5 group-hover:scale-105 transition-transform duration-300"
           onError={(e) => { e.target.src = 'https://placehold.co/300x400?text=No+Image' }}
         />
         {type === 'best_seller' && book.totalSold > 0 && (
@@ -639,11 +639,11 @@ function FlashCard({ book }) {
       to={`/books/${book.id}`}
       className="shrink-0 w-40 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200 overflow-hidden group"
     >
-      <div className="relative aspect-[3/4] bg-gradient-to-br from-slate-100 to-slate-50 overflow-hidden">
+      <div className="relative aspect-[3/4] bg-white overflow-hidden">
         <img
           src={book.imageUrl || 'https://placehold.co/300x400?text=No+Image'}
           alt={book.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          className="absolute inset-0 w-full h-full object-contain p-1.5 group-hover:scale-105 transition-transform duration-300"
           onError={(e) => { e.target.src = 'https://placehold.co/300x400?text=No+Image' }}
         />
         <span className="absolute top-2 left-2 bg-rose-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-md shadow">

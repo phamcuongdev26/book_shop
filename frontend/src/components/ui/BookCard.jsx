@@ -29,11 +29,11 @@ export function BookCard({ book, colorIndex = 0 }) {
       to={`/books/${book.id}`}
       className="card group flex flex-col hover:shadow-lg hover:-translate-y-1 transition-all duration-200"
     >
-      <div className="relative aspect-[3/4] bg-gradient-to-br from-slate-100 to-slate-50 overflow-hidden">
+      <div className="relative aspect-[3/4] bg-white overflow-hidden">
         <img
           src={book.imageUrl || PLACEHOLDER}
           alt={book.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          className="absolute inset-0 w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-300"
           onError={(e) => { e.target.src = PLACEHOLDER }}
         />
         {outOfStock && (
