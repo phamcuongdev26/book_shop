@@ -29,11 +29,11 @@ export function BookCard({ book, colorIndex = 0 }) {
       to={`/books/${book.id}`}
       className="card group flex flex-col hover:shadow-lg hover:-translate-y-1 transition-all duration-200"
     >
-      <div className="relative overflow-hidden">
+      <div className="relative overflow-hidden bg-gray-100" style={{ aspectRatio: '3/4' }}>
         <img
           src={book.imageUrl || PLACEHOLDER}
           alt={book.title}
-          style={{ display: 'block', width: '100%', aspectRatio: '3/4', objectFit: 'cover', background: '#f3f4f6' }}
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
           className="group-hover:scale-105 transition-transform duration-300"
           onError={(e) => { e.target.src = PLACEHOLDER }}
         />
