@@ -306,7 +306,7 @@ export default function ProductDetail() {
               <img
                 src={product.imageUrl || PLACEHOLDER}
                 alt={product.title}
-                className="w-full h-full object-contain p-4"
+                className="w-full h-full object-contain"
                 onError={(e) => { e.target.src = PLACEHOLDER }}
               />
               {hasDiscount && (
