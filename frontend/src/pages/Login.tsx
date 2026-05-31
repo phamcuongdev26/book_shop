@@ -25,7 +25,8 @@ export default function Login() {
       toast.success('Đăng nhập thành công!')
       navigate(from, { replace: true })
     } catch (err: unknown) {
-      setError('Sai tài khoản hoặc mật khẩu')
+      const axiosErr = err as { response?: { data?: { message?: string } } }
+      setError(axiosErr?.response?.data?.message || 'Sai tài khoản hoặc mật khẩu')
     } finally {
       setLoading(false)
     }
