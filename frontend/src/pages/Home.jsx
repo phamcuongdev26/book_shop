@@ -554,11 +554,11 @@ function SectionCard({ book, type, isStatic = false }) {
 
   const inner = (
     <>
-      <div style={{ position: 'relative', width: '100%', paddingBottom: '133.33%', overflow: 'hidden', background: '#fff' }}>
+      <div className="relative overflow-hidden">
         <img
           src={book.imageUrl || 'https://placehold.co/300x400?text=No+Image'}
           alt={book.title}
-          style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, objectFit: 'cover', display: 'block' }}
+          style={{ display: 'block', width: '100%', aspectRatio: '3/4', objectFit: 'contain', background: '#f3f4f6' }}
           className="group-hover:scale-105 transition-transform duration-300"
           onError={(e) => { e.target.src = 'https://placehold.co/300x400?text=No+Image' }}
         />
@@ -640,11 +640,11 @@ function FlashCard({ book }) {
       to={`/books/${book.id}`}
       className="shrink-0 w-40 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200 overflow-hidden group"
     >
-      <div style={{ position: 'relative', width: '100%', paddingBottom: '133.33%', overflow: 'hidden', background: '#fff' }}>
+      <div className="relative overflow-hidden">
         <img
           src={book.imageUrl || 'https://placehold.co/300x400?text=No+Image'}
           alt={book.title}
-          style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, objectFit: 'cover', display: 'block' }}
+          style={{ display: 'block', width: '100%', aspectRatio: '3/4', objectFit: 'contain', background: '#f3f4f6' }}
           className="group-hover:scale-105 transition-transform duration-300"
           onError={(e) => { e.target.src = 'https://placehold.co/300x400?text=No+Image' }}
         />

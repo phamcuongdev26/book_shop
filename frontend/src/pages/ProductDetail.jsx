@@ -302,11 +302,11 @@ export default function ProductDetail() {
 
           {/* ── Cột ảnh ── */}
           <div className="space-y-3">
-            <div style={{ position: 'relative', width: '100%', paddingBottom: '133.33%', overflow: 'hidden', borderRadius: '1rem', border: '1px solid #e5e7eb' }}>
+            <div className="w-full rounded-2xl overflow-hidden border border-gray-200">
               <img
                 src={product.imageUrl || PLACEHOLDER}
                 alt={product.title}
-                style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, objectFit: 'cover', display: 'block' }}
+                style={{ display: 'block', width: '100%', aspectRatio: '3/4', objectFit: 'contain', background: '#f3f4f6' }}
                 onError={(e) => { e.target.src = PLACEHOLDER }}
               />
               {hasDiscount && (
