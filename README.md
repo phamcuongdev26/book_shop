@@ -20,12 +20,16 @@ Mở trình duyệt: **http://localhost:8080**
 
 ### Tài khoản có sẵn
 
-| Username | Password   | Vai trò |
-|----------|------------|---------|
-| admin    | Admin1234  | Admin   |
-| seller1  | seller1    | Seller  |
+| Username | Email | Password | Vai trò |
+|----------|-------|----------|---------|
+| admin | admin@bookshop.com | 123456 | Admin |
+| chanchan | tamchan1@gmail.com | *(tự đặt)* | Seller |
+| tamtrung | tamtrung@gmail.com | *(tự đặt)* | User |
+| tamchan | tamchan@gmail.com | *(tự đặt)* | User |
+| ácc | zz@gmail.com | 123456 | User |
+| tuann | ads@gmail.com | *(tự đặt)* | User |
 
-> Tài khoản User: tự đăng ký tại trang `/register`
+> Tài khoản User mới: tự đăng ký tại trang `/register`
 
 ### Dừng ứng dụng
 
