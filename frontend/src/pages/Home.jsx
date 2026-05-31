@@ -3,15 +3,13 @@ import { Link } from 'react-router-dom'
 import {
   Search, X, Zap,
   BookOpen, TrendingUp, Star, ChevronLeft, ChevronRight,
-  GraduationCap, Gift, Mail, Package,
+
 } from 'lucide-react'
 import { booksApi } from '../api/books'
 import { categoriesApi } from '../api/categories'
 import { BookCard } from '../components/ui/BookCard'
 import { Pagination } from '../components/ui/Pagination'
 import { PageSpinner } from '../components/ui/Spinner'
-import { SPOTLIGHT_SECTIONS } from '../data/spotlightProducts'
-
 const SORT_OPTIONS = [
   { value: 'newest',      label: 'Mới nhất'         },
   { value: 'best_seller', label: 'Bán chạy nhất'    },
@@ -20,14 +18,6 @@ const SORT_OPTIONS = [
   { value: 'price_desc',  label: 'Giá cao → thấp'  },
   { value: 'title_asc',   label: 'Tên A → Z'       },
 ]
-
-// icon map cho từng section (icon là React component, không để trong data file)
-const SECTION_ICONS = {
-  'do-dung-hoc-tap': GraduationCap,
-  'thiep':           Mail,
-  'gau-bong-mini':   Package,
-  'qua-tang':        Gift,
-}
 
 function formatPrice(n) {
   return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(n)
@@ -270,20 +260,6 @@ export default function Home() {
           />
         )}
 
-        {/* ── SPOTLIGHT CATEGORIES (static products) ─── */}
-        {SPOTLIGHT_SECTIONS.map(({ key, title, headerColor, subtitle, items }) => (
-          <SectionRow
-            key={key}
-            books={items}
-            title={title}
-            icon={SECTION_ICONS[key]}
-            headerColor={headerColor}
-            subtitle={subtitle}
-            cardType="generic"
-            staticItems
-            viewMoreTo={categoryUrlBySlug(key)}
-          />
-        ))}
 
         {/* ── TẤT CẢ SÁCH ───────────────────────────────── */}
         <div className="py-6" ref={gridRef}>

@@ -6,7 +6,6 @@ import {
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { useAuth } from '../context/AuthContext'
-import { findProductById } from '../data/spotlightProducts'
 import { cartApi } from '../api/cart'
 import { ordersApi } from '../api/orders'
 
@@ -252,7 +251,7 @@ export default function ProductDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
   const { isAuthenticated } = useAuth()
-  const product = findProductById(id)
+  const product = null
   const [qty, setQty] = useState(1)
   const [showModal, setShowModal] = useState(false)
 
