@@ -59,7 +59,7 @@ export const SPOTLIGHT_SECTIONS = [
         title: 'Vở ô li 200 trang – bộ 5 cuốn',
         brand: 'Hồng Hà',
         price: 55000, discountPrice: null,
-        imageUrl: img('notebook', 103),
+        imageUrl: 'https://picsum.photos/seed/vo-o-li-200/320/420',
         avgRating: 4.5, totalSold: 640,
         description: 'Vở ô li 200 trang/cuốn, bộ 5 cuốn tiết kiệm. Giấy trắng 70gsm, mực không nhòe, ô li đều và rõ. Bìa cứng chống nước nhẹ, lý tưởng cho học sinh tiểu học luyện chữ đẹp.',
         highlights: [
