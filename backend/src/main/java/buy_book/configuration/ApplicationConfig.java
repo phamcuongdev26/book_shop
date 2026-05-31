@@ -27,12 +27,12 @@ public class ApplicationConfig {
                         .username("admin")
                         .fullName("ADMIN")
                         .email("admin@bookshop.com")
-                            .password(passwordEncoder.encode("Admin1234"))
+                            .password(passwordEncoder.encode("123456"))
                         .role(Role.ADMIN)
                         .isActive(true)
                         .build();
                 userRepository.save(admin);
-                log.warn("Admin user has been created: admin / Admin1234");
+                log.warn("Admin user has been created: admin / 123456");
             }
         };
     }
