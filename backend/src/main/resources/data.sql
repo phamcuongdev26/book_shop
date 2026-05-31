@@ -1,6 +1,5 @@
 SET FOREIGN_KEY_CHECKS=0;
 SET NAMES utf8mb4;
-UPDATE `users` SET `password` = '$2b$10$V0vH47SeyhjEjqxbH1VbPOGtxtWEqq9SF5z20SErtS/N4lTdGKFca' WHERE `email` = 'admin@bookshop.com';
 UPDATE `books` SET `active` = 1 WHERE `status` = 'ACTIVE' AND (`active` = 0 OR `active` IS NULL);
 UPDATE `books` SET `category_id` = COALESCE((SELECT `id` FROM `categories` WHERE `slug` = 'do-dung-hoc-tap' LIMIT 1), `category_id`) WHERE `category_id` = 27;
 UPDATE `books` SET `category_id` = COALESCE((SELECT `id` FROM `categories` WHERE `slug` = 'thiep' LIMIT 1), `category_id`) WHERE `category_id` = 28;

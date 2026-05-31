@@ -22,17 +22,23 @@ public class ApplicationConfig {
     @Bean
     ApplicationRunner applicationRunner(UserRepository userRepository) {
         return args -> {
-            if (userRepository.findByEmail("admin@bookshop.com").isEmpty()) {
+            var adminOpt = userRepository.findByEmail("admin@bookshop.com");
+            if (adminOpt.isEmpty()) {
                 User admin = User.builder()
                         .username("admin")
                         .fullName("ADMIN")
                         .email("admin@bookshop.com")
-                            .password(passwordEncoder.encode("123456"))
+                        .password(passwordEncoder.encode("123456"))
                         .role(Role.ADMIN)
                         .isActive(true)
                         .build();
                 userRepository.save(admin);
-                log.warn("Admin user has been created: admin / 123456");
+                log.warn("Admin user created: admin / 123456");
+            } else {
+                User admin = adminOpt.get();
+                admin.setPassword(passwordEncoder.encode("123456"));
+                userRepository.save(admin);
+                log.warn("Admin password reset to: 123456");
             }
         };
     }
