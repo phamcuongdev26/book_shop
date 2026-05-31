@@ -23,13 +23,10 @@ Mở trình duyệt: **http://localhost:8080**
 | Username | Email | Password | Vai trò |
 |----------|-------|----------|---------|
 | admin | admin@bookshop.com | 123456 | Admin |
-| chanchan | tamchan1@gmail.com | *(tự đặt)* | Seller |
-| tamtrung | tamtrung@gmail.com | *(tự đặt)* | User |
-| tamchan | tamchan@gmail.com | *(tự đặt)* | User |
-| ácc | zz@gmail.com | 123456 | User |
-| tuann | ads@gmail.com | *(tự đặt)* | User |
+| seller | seller@bookshop.com | 123456 | Seller |
+| user | user@bookshop.com | 123456 | User |
 
-> Tài khoản User mới: tự đăng ký tại trang `/register`
+> Tài khoản mới: tự đăng ký tại trang `/register`
 
 ### Dừng ứng dụng
 
