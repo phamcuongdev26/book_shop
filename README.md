@@ -20,11 +20,11 @@ Mở trình duyệt: **http://localhost:8080**
 
 ### Tài khoản có sẵn
 
-| Username | Email | Password | Vai trò |
-|----------|-------|----------|---------|
-| admin | admin@bookshop.com | 123456 | Admin |
-| seller | seller@bookshop.com | 123456 | Seller |
-| user | user@bookshop.com | 123456 | User |
+| Email | Password | Vai trò |
+|-------|----------|---------|
+| admin@bookshop.com | 123456 | Admin |
+| seller@bookshop.com | 123456 | Seller |
+| user@bookshop.com | 123456 | User |
 
 > Tài khoản mới: tự đăng ký tại trang `/register`
 
