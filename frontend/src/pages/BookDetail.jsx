@@ -219,7 +219,7 @@ export default function BookDetail() {
           <div className="flex justify-center">
             <div className="w-full max-w-xs rounded-xl overflow-hidden border border-gray-200 bg-gray-100" style={{ aspectRatio: '3/4', position: 'relative' }}>
               <img src={book.imageUrl || PLACEHOLDER} alt={book.title}
-                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+                style={{ position: 'absolute', inset: '-15%', width: '130%', height: '130%', objectFit: 'cover' }}
                 onError={e => { e.target.src = PLACEHOLDER }} />
             </div>
           </div>

@@ -456,7 +456,7 @@ function HeroBookColumn({ books, rotates, offsetClass }) {
               <img
                 src={book.imageUrl}
                 alt={book.title}
-                className="w-full h-full object-cover"
+                className="w-[130%] h-[130%] -m-[15%] object-cover"
                 onError={(e) => { e.target.style.display = 'none'; e.target.parentElement.classList.add('bg-white/10') }}
               />
             ) : (
@@ -558,7 +558,7 @@ function SectionCard({ book, type, isStatic = false }) {
         <img
           src={book.imageUrl || 'https://placehold.co/300x400?text=No+Image'}
           alt={book.title}
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+          style={{ position: 'absolute', inset: '-15%', width: '130%', height: '130%', objectFit: 'cover' }}
           className="group-hover:scale-105 transition-transform duration-300"
           onError={(e) => { e.target.src = 'https://placehold.co/300x400?text=No+Image' }}
         />
@@ -644,7 +644,7 @@ function FlashCard({ book }) {
         <img
           src={book.imageUrl || 'https://placehold.co/300x400?text=No+Image'}
           alt={book.title}
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+          style={{ position: 'absolute', inset: '-15%', width: '130%', height: '130%', objectFit: 'cover' }}
           className="group-hover:scale-105 transition-transform duration-300"
           onError={(e) => { e.target.src = 'https://placehold.co/300x400?text=No+Image' }}
         />
@@ -660,4 +660,3 @@ function FlashCard({ book }) {
     </Link>
   )
 }
-
