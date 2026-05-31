@@ -15,11 +15,11 @@ export function BookCard({ book }: { book: BookSummary }) {
 
   return (
     <Link to={`/books/${book.id}`} className="card group flex flex-col hover:shadow-md transition-shadow">
-      <div className="relative aspect-[3/4] bg-gray-50 overflow-hidden">
+      <div className="relative aspect-[3/4] bg-white overflow-hidden flex items-center justify-center border-b border-gray-100">
         <img
           src={book.imageUrl || PLACEHOLDER}
           alt={book.title}
-          className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
+          className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-300"
           onError={(e) => { (e.target as HTMLImageElement).src = PLACEHOLDER }}
         />
         {outOfStock && (
