@@ -19,7 +19,7 @@ export function BookCard({ book }: { book: BookSummary }) {
         <img
           src={book.imageUrl || PLACEHOLDER}
           alt={book.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
           onError={(e) => { (e.target as HTMLImageElement).src = PLACEHOLDER }}
         />
         {outOfStock && (
