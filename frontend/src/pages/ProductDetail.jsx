@@ -306,7 +306,7 @@ export default function ProductDetail() {
               <img
                 src={product.imageUrl || PLACEHOLDER}
                 alt={product.title}
-                style={{ display: 'block', width: '100%', aspectRatio: '3/4', objectFit: 'contain', background: '#f3f4f6' }}
+                style={{ display: 'block', width: '100%', aspectRatio: '3/4', objectFit: 'cover', background: '#f3f4f6' }}
                 onError={(e) => { e.target.src = PLACEHOLDER }}
               />
               {hasDiscount && (
