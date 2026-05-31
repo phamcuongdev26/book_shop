@@ -223,7 +223,7 @@ export default function BookDetailPage() {
           <div className="flex justify-center">
             <div className="w-full max-w-xs aspect-[3/4] bg-white rounded-xl overflow-hidden border border-gray-200">
               <img src={book.imageUrl || PLACEHOLDER} alt={book.title}
-                className="w-full h-full object-contain"
+                className="w-full h-full object-cover"
                 onError={(e) => { (e.target as HTMLImageElement).src = PLACEHOLDER }} />
             </div>
           </div>
