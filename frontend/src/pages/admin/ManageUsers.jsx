@@ -284,15 +284,18 @@ export default function ManageUsers() {
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-gray-600 mb-1">Vai trò</label>
-                  <select value={form.role} onChange={set('role')}
-                    className="w-full px-3 py-2 text-sm border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-400">
-                    {ROLES
-                      .filter(r => !editId || ROLE_LEVEL[r] >= ROLE_LEVEL[originalRole])
-                      .map(r => <option key={r} value={r}>{ROLE_META[r]?.label || r}</option>)
-                    }
-                  </select>
-                  {editId && ROLE_LEVEL[originalRole] > 0 && (
-                    <p className="text-xs text-amber-600 mt-1">Chỉ có thể nâng vai trò, không thể hạ xuống.</p>
+                  {form.role === 'ADMIN' ? (
+                    <div className="w-full px-3 py-2 text-sm border border-gray-200 rounded-xl bg-gray-100 text-gray-500 cursor-not-allowed">
+                      Quản trị viên (không thể thay đổi)
+                    </div>
+                  ) : (
+                    <select value={form.role} onChange={set('role')}
+                      className="w-full px-3 py-2 text-sm border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                      {['USER', 'SELLER']
+                        .filter(r => !editId || ROLE_LEVEL[r] >= ROLE_LEVEL[originalRole])
+                        .map(r => <option key={r} value={r}>{ROLE_META[r]?.label || r}</option>)
+                      }
+                    </select>
                   )}
                 </div>
               </div>
