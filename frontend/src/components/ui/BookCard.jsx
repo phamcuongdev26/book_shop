@@ -27,15 +27,13 @@ export function BookCard({ book, colorIndex = 0 }) {
   return (
     <Link
       to={`/books/${book.id}`}
-      className="group flex flex-col hover:-translate-y-1 transition-all duration-200"
+      className="group flex flex-col h-full hover:-translate-y-1 transition-all duration-200"
     >
-      {/* Khung ảnh 3:4 */}
-      <div className="relative overflow-hidden bg-[#f5f5f5] rounded-xl border border-gray-100 shadow-sm group-hover:shadow-md transition-shadow" style={{ aspectRatio: '2/3' }}>
+      <div className="w-full aspect-[2/3] bg-gray-100 overflow-hidden rounded-lg relative">
         <img
           src={book.imageUrl || PLACEHOLDER}
           alt={book.title}
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain' }}
-          className="group-hover:scale-105 transition-transform duration-300"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           onError={(e) => { e.target.onerror = null; e.target.src = PLACEHOLDER }}
         />
         {outOfStock && (
@@ -57,14 +55,13 @@ export function BookCard({ book, colorIndex = 0 }) {
         )}
       </div>
 
-      {/* Chữ bên dưới khung */}
-      <div className="pt-2 px-0.5 flex flex-col gap-0.5">
+      <div className="pt-2 px-0.5 flex flex-col gap-0.5 flex-1">
         <p className={`text-xs font-medium ${catColor}`}>{book.categoryName}</p>
-        <h3 className="text-sm font-semibold text-gray-900 line-clamp-2 leading-snug group-hover:text-indigo-700 transition-colors">
+        <h3 className="text-sm font-semibold text-gray-900 line-clamp-2 min-h-[2.5rem] leading-snug group-hover:text-indigo-700 transition-colors">
           {book.title}
         </h3>
-        <p className="text-xs text-gray-400">{book.author}</p>
-        <div className="pt-1 flex items-end justify-between">
+        <p className="text-xs text-gray-400 line-clamp-1">{book.author}</p>
+        <div className="mt-auto pt-1 flex items-end justify-between">
           <div>
             <p className="text-sm font-bold text-indigo-600">{formatPrice(effectivePrice)}</p>
             {hasDiscount && (

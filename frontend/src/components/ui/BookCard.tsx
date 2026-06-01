@@ -14,12 +14,12 @@ export function BookCard({ book }: { book: BookSummary }) {
   const outOfStock = book.status === 'OUT_OF_STOCK'
 
   return (
-    <Link to={`/books/${book.id}`} className="card group flex flex-col hover:shadow-md transition-shadow">
-      <div className="relative aspect-[2/3] bg-[#f5f5f5] overflow-hidden rounded-t-xl">
+    <Link to={`/books/${book.id}`} className="card group flex flex-col h-full hover:shadow-md transition-shadow">
+      <div className="w-full aspect-[2/3] bg-gray-100 overflow-hidden rounded-lg relative">
         <img
           src={book.imageUrl || PLACEHOLDER}
           alt={book.title}
-          className="absolute inset-0 h-full w-full object-contain group-hover:scale-105 transition-transform duration-300"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           onError={(e) => { (e.target as HTMLImageElement).onerror = null; (e.target as HTMLImageElement).src = PLACEHOLDER }}
         />
         {outOfStock && (
@@ -36,10 +36,10 @@ export function BookCard({ book }: { book: BookSummary }) {
 
       <div className="p-3 flex flex-col gap-1.5 flex-1">
         <p className="text-xs text-gray-400">{book.categoryName}</p>
-        <h3 className="text-sm font-medium text-gray-900 line-clamp-2 leading-snug group-hover:text-gray-600 transition-colors">
+        <h3 className="text-sm font-medium text-gray-900 line-clamp-2 min-h-[2.5rem] leading-snug group-hover:text-gray-600 transition-colors">
           {book.title}
         </h3>
-        <p className="text-xs text-gray-500">{book.author}</p>
+        <p className="text-xs text-gray-500 line-clamp-1">{book.author}</p>
 
         <div className="mt-auto pt-2 flex items-end justify-between">
           <div>
