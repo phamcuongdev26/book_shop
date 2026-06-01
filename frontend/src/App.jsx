@@ -76,9 +76,6 @@ export default function App() {
             <Route path="admin" element={
               <RequireAuth roles={['ADMIN']}><AdminDashboard /></RequireAuth>
             } />
-            <Route path="admin/orders" element={
-              <RequireAuth roles={['ADMIN']}><ManageOrders /></RequireAuth>
-            } />
             <Route path="admin/users" element={
               <RequireAuth roles={['ADMIN']}><ManageUsers /></RequireAuth>
             } />

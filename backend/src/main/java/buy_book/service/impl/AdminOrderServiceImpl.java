@@ -3,7 +3,6 @@ package buy_book.service.impl;
 import buy_book.constant.NotificationType;
 import buy_book.constant.OrderStatus;
 import buy_book.constant.PaymentStatus;
-import buy_book.constant.Role;
 import buy_book.dto.request.AdminCreateOrderItemRequest;
 import buy_book.dto.request.AdminCreateOrderRequest;
 import buy_book.dto.response.OrderItemResponse;
@@ -203,11 +202,6 @@ public class AdminOrderServiceImpl implements AdminOrderService {
         return toResponse(saved);
     }
 
-    private void notifyAdmins(Order order, String title, String message, NotificationType type) {
-        userRepository.findByRole(Role.ADMIN).forEach(admin ->
-                notificationService.create(admin, title, message, type, order.getId(), order.getOrderCode()));
-    }
-
     private void notifySellers(Order order, String title, String message, NotificationType type) {
         Set<User> sellers = new LinkedHashSet<>();
         order.getItems().forEach(item -> {
@@ -263,11 +257,6 @@ public class AdminOrderServiceImpl implements AdminOrderService {
                 "Đơn hàng #" + saved.getOrderCode() + " đã được shop cập nhật sang trạng thái: " + statusLabel(status),
                 NotificationType.ORDER_STATUS_CHANGED,
                 saved.getId(), saved.getOrderCode());
-
-        notifyAdmins(saved,
-                "Shop cập nhật đơn hàng",
-                "Shop " + sellerUsername + " đã cập nhật đơn hàng #" + saved.getOrderCode() + " → " + statusLabel(status),
-                NotificationType.ORDER_STATUS_CHANGED);
 
         return toSellerResponse(saved, seller.getId());
     }
@@ -327,11 +316,6 @@ public class AdminOrderServiceImpl implements AdminOrderService {
                 NotificationType.ORDER_STATUS_CHANGED,
                 saved.getId(), saved.getOrderCode());
 
-        notifyAdmins(saved,
-                "Đơn hàng mới",
-                "Đơn hàng #" + saved.getOrderCode() + " vừa được tạo. Tổng tiền: "
-                        + String.format("%,.0f", saved.getTotalAmount()) + "đ",
-                NotificationType.ORDER_PLACED);
         notifySellers(saved,
                 "Có đơn hàng chứa sản phẩm của bạn",
                 "Đơn hàng #" + saved.getOrderCode() + " có sản phẩm của bạn. Vui lòng kiểm tra và xử lý.",
