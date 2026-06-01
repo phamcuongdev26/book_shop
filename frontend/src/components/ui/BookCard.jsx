@@ -27,7 +27,7 @@ export function BookCard({ book, colorIndex = 0 }) {
   return (
     <Link
       to={`/books/${book.id}`}
-      className="group flex flex-col h-full hover:-translate-y-1 transition-all duration-200"
+      className="group flex flex-col h-full hover:scale-105 hover:z-10 hover:-translate-y-1 transition-all duration-200"
     >
       <div className="w-full aspect-[2/3] bg-gray-100 overflow-hidden rounded-lg relative">
         <img

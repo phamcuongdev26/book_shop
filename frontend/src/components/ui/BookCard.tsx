@@ -14,7 +14,7 @@ export function BookCard({ book }: { book: BookSummary }) {
   const outOfStock = book.status === 'OUT_OF_STOCK'
 
   return (
-    <Link to={`/books/${book.id}`} className="card group flex flex-col h-full hover:shadow-md transition-shadow">
+    <Link to={`/books/${book.id}`} className="card group flex flex-col h-full hover:scale-105 hover:z-10 hover:shadow-lg transition-all duration-200">
       <div className="w-full aspect-[2/3] bg-gray-100 overflow-hidden rounded-lg relative">
         <img
           src={book.imageUrl || PLACEHOLDER}

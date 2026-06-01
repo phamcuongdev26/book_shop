@@ -552,7 +552,7 @@ function SectionCard({ book, type, isStatic = false, featured = false }) {
 
   const cardWidth = featured ? 'w-52' : 'w-40'
   const imgHeight = featured ? 'h-60' : 'h-48'
-  const linkClass = `shrink-0 ${cardWidth} flex flex-col hover:-translate-y-1 transition-all duration-200 group cursor-pointer`
+  const linkClass = `shrink-0 ${cardWidth} flex flex-col hover:scale-105 hover:z-10 hover:-translate-y-1 transition-all duration-200 group cursor-pointer`
 
   const inner = (
     <>
@@ -639,7 +639,7 @@ function FlashCard({ book }) {
   return (
     <Link
       to={`/books/${book.id}`}
-      className="shrink-0 w-40 flex flex-col hover:-translate-y-1 transition-all duration-200 group"
+      className="shrink-0 w-40 flex flex-col hover:scale-105 hover:z-10 hover:-translate-y-1 transition-all duration-200 group"
     >
       <div className="h-48 w-full bg-gray-100 flex items-center justify-center rounded-xl border border-gray-100 shadow-sm group-hover:shadow-md transition-shadow overflow-hidden relative">
         <img
