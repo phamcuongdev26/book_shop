@@ -172,7 +172,7 @@ export default function Cart() {
                     src={item.bookImage || PLACEHOLDER}
                     alt={item.bookTitle}
                     className="w-16 h-20 object-cover rounded-lg border border-gray-100 shrink-0 bg-gray-50"
-                    onError={(e) => { e.target.src = PLACEHOLDER }}
+                    onError={(e) => { e.target.onerror = null; e.target.src = PLACEHOLDER }}
                   />
 
                   {/* Info */}

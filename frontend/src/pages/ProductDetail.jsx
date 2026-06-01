@@ -121,7 +121,7 @@ function OrderModal({ product, qty, onClose }) {
             src={product.imageUrl || PLACEHOLDER}
             alt={product.title}
             className="w-12 h-16 object-cover rounded-lg border border-indigo-100"
-            onError={e => { e.target.src = PLACEHOLDER }}
+            onError={(e) => { e.target.onerror = null; e.target.src = PLACEHOLDER }}
           />
           <div className="flex-1 min-w-0">
             <p className="text-sm font-semibold text-gray-800 line-clamp-2">{product.title}</p>
@@ -306,7 +306,7 @@ export default function ProductDetail() {
                 src={product.imageUrl || PLACEHOLDER}
                 alt={product.title}
                 style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain' }}
-                onError={(e) => { e.target.src = PLACEHOLDER }}
+                onError={(e) => { e.target.onerror = null; e.target.src = PLACEHOLDER }}
               />
               {hasDiscount && (
                 <span className="absolute top-4 left-4 bg-rose-500 text-white text-sm font-bold px-2.5 py-1.5 rounded-xl shadow-lg">

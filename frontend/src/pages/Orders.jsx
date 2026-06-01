@@ -274,7 +274,7 @@ export default function Orders() {
                               src={item.bookImage || PLACEHOLDER}
                               alt={item.bookTitle}
                               className="w-12 h-16 object-cover rounded-lg border border-gray-100 shrink-0"
-                              onError={(e) => { e.target.src = PLACEHOLDER }}
+                              onError={(e) => { e.target.onerror = null; e.target.src = PLACEHOLDER }}
                             />
                             <div className="flex-1 min-w-0">
                               <Link

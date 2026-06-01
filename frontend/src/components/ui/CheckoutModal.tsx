@@ -92,7 +92,7 @@ export function CheckoutModal({ bookId, bookTitle, bookImageUrl, author, effecti
         <div className="mx-5 mt-4 bg-indigo-50 border border-indigo-100 rounded-xl p-3 flex items-center gap-3">
           <img src={bookImageUrl || PLACEHOLDER} alt={bookTitle}
             className="w-12 h-16 object-cover rounded-lg border border-indigo-100"
-            onError={(e) => { (e.target as HTMLImageElement).src = PLACEHOLDER }} />
+            onError={(e) => { (e.target as HTMLImageElement).onerror = null; (e.target as HTMLImageElement).src = PLACEHOLDER }} />
           <div className="flex-1 min-w-0">
             <p className="text-sm font-semibold text-gray-800 line-clamp-2">{bookTitle}</p>
             {author && <p className="text-xs text-gray-500 mt-0.5">{author} · SL: {qty}</p>}

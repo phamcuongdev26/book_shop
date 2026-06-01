@@ -86,7 +86,7 @@ function CheckoutModal({ book, qty, onClose }) {
         <div className="mx-5 mt-4 bg-indigo-50 border border-indigo-100 rounded-xl p-3 flex items-center gap-3">
           <img src={book.imageUrl || PLACEHOLDER} alt={book.title}
             className="w-12 h-16 object-cover rounded-lg border border-indigo-100"
-            onError={e => { e.target.src = PLACEHOLDER }} />
+            onError={(e) => { e.target.onerror = null; e.target.src = PLACEHOLDER }} />
           <div className="flex-1 min-w-0">
             <p className="text-sm font-semibold text-gray-800 line-clamp-2">{book.title}</p>
             <p className="text-xs text-gray-500 mt-0.5">{book.author} · SL: {qty}</p>
@@ -220,7 +220,7 @@ export default function BookDetail() {
             <div className="w-full max-w-xs rounded-xl overflow-hidden border border-gray-200 bg-white" style={{ aspectRatio: '3/4', position: 'relative' }}>
               <img src={book.imageUrl || PLACEHOLDER} alt={book.title}
                 style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain' }}
-                onError={e => { e.target.src = PLACEHOLDER }} />
+                onError={(e) => { e.target.onerror = null; e.target.src = PLACEHOLDER }} />
             </div>
           </div>
 

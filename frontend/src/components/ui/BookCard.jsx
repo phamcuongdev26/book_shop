@@ -35,7 +35,7 @@ export function BookCard({ book, colorIndex = 0 }) {
           alt={book.title}
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain' }}
           className="group-hover:scale-105 transition-transform duration-300"
-          onError={(e) => { e.target.src = PLACEHOLDER }}
+          onError={(e) => { e.target.onerror = null; e.target.src = PLACEHOLDER }}
         />
         {outOfStock && (
           <div className="absolute inset-0 bg-white/70 flex items-center justify-center">

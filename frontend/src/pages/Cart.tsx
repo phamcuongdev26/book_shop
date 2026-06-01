@@ -107,7 +107,7 @@ export default function Cart() {
                   src={item.bookImageUrl || PLACEHOLDER}
                   alt={item.bookTitle}
                   className="w-16 h-20 object-cover rounded-lg border border-gray-100 shrink-0"
-                  onError={(e) => { (e.target as HTMLImageElement).src = PLACEHOLDER }}
+                  onError={(e) => { (e.target as HTMLImageElement).onerror = null; (e.target as HTMLImageElement).src = PLACEHOLDER }}
                 />
                 <div className="flex-1 min-w-0 space-y-2">
                   <Link to={`/books/${item.bookId}`} className="text-sm font-medium text-gray-900 hover:text-gray-600 line-clamp-2 transition-colors">

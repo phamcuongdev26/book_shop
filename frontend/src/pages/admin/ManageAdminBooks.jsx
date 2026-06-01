@@ -127,7 +127,7 @@ export default function ManageAdminBooks() {
                             src={book.imageUrl || 'https://placehold.co/48x64?text=?'}
                             alt={book.title}
                             className="w-10 h-14 object-cover rounded-lg border border-gray-100 shrink-0"
-                            onError={e => { e.target.src = 'https://placehold.co/48x64?text=?' }}
+                            onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/48x64?text=?' }}
                           />
                           <div className="min-w-0">
                             <p className="font-medium text-gray-900 line-clamp-1">{book.title}</p>

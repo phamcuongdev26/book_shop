@@ -20,7 +20,7 @@ export function BookCard({ book }: { book: BookSummary }) {
           src={book.imageUrl || PLACEHOLDER}
           alt={book.title}
           className="absolute inset-0 h-full w-full object-contain group-hover:scale-105 transition-transform duration-300"
-          onError={(e) => { (e.target as HTMLImageElement).src = PLACEHOLDER }}
+          onError={(e) => { (e.target as HTMLImageElement).onerror = null; (e.target as HTMLImageElement).src = PLACEHOLDER }}
         />
         {outOfStock && (
           <div className="absolute inset-0 bg-white/60 flex items-center justify-center">

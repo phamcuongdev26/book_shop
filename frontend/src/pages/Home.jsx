@@ -560,7 +560,7 @@ function SectionCard({ book, type, isStatic = false }) {
           alt={book.title}
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain' }}
           className="group-hover:scale-105 transition-transform duration-300"
-          onError={(e) => { e.target.src = 'https://placehold.co/300x400?text=No+Image' }}
+          onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/300x400?text=No+Image' }}
         />
         {type === 'best_seller' && book.totalSold > 0 && (
           <span className="absolute top-2 left-2 flex items-center gap-0.5 bg-orange-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-md shadow">
@@ -646,7 +646,7 @@ function FlashCard({ book }) {
           alt={book.title}
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain' }}
           className="group-hover:scale-105 transition-transform duration-300"
-          onError={(e) => { e.target.src = 'https://placehold.co/300x400?text=No+Image' }}
+          onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/300x400?text=No+Image' }}
         />
         <span className="absolute top-2 left-2 bg-rose-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-md shadow">
           -{discount}%
