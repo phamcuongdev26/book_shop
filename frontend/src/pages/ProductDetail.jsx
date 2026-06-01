@@ -80,7 +80,7 @@ function OrderModal({ product, qty, onClose }) {
         recipientPhone: form.recipientPhone,
         paymentMethod: form.paymentMethod,
         note: form.note,
-        selectedItemIds: cartItem ? [cartItem.id] : undefined,
+        selectedItemIds: cartItem ? [cartItem.cartItemId] : undefined,
       })
 
       onClose()
