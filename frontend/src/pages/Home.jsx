@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import {
   Search, X, Zap,
   BookOpen, TrendingUp, Star, ChevronLeft, ChevronRight,
@@ -35,6 +35,7 @@ function buildBookListUrl(params) {
 
 export default function Home() {
   const gridRef = useRef(null)
+  const location = useLocation()
 
   // ── Section books ─────────────────────────────────────────────
   const [flashBooks,       setFlashBooks]       = useState([])
@@ -62,6 +63,18 @@ export default function Home() {
     categoryId: null, sortBy: 'newest', hasDiscount: false,
     title: '', author: '', year: '',
   })
+
+  // Pick up ?title= from URL (e.g. from header search bar)
+  useEffect(() => {
+    const params = new URLSearchParams(location.search)
+    const urlTitle = params.get('title') || ''
+    if (urlTitle) {
+      setTitleInput(urlTitle)
+      setApplied(a => ({ ...a, title: urlTitle }))
+      setPage(0)
+      gridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }, [location.search])
 
   // load categories + section rows once
   useEffect(() => {
