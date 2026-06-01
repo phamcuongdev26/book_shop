@@ -11,16 +11,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ReviewResponse {
-    Long id;
+public class OrderItemInfo {
     Long orderItemId;
-    String username;
-    String fullName;
-    Long shopId;
-    String shopName;
-    int rating;
-    String comment;
-    String shopReply;
-    LocalDateTime repliedAt;
-    LocalDateTime createdAt;
+    String orderCode;
+    LocalDateTime purchasedAt;
 }

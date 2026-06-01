@@ -193,10 +193,10 @@ function StarPicker({ value, onChange }) {
 
 function ReviewSection({ bookId, isAuthenticated }) {
   const [reviews, setReviews] = useState([])
-  const [status, setStatus] = useState(null)
+  const [status, setStatus] = useState(null)  // {reviewableItems, myReviews}
   const [form, setForm] = useState({ rating: 0, comment: '' })
   const [submitting, setSubmitting] = useState(false)
-  const [editing, setEditing] = useState(false)
+  const [editingId, setEditingId] = useState(null)
   const [editForm, setEditForm] = useState({ rating: 0, comment: '' })
   const [editSubmitting, setEditSubmitting] = useState(false)
 
@@ -204,23 +204,29 @@ function ReviewSection({ bookId, isAuthenticated }) {
     try {
       const r = await reviewsApi.getBookReviews(bookId)
       setReviews(r.data.result || [])
-    } catch { /* ignore */ }
+    } catch {}
     if (isAuthenticated) {
       try {
         const s = await reviewsApi.getMyStatus(bookId)
         setStatus(s.data.result)
-      } catch { /* ignore */ }
+      } catch {}
     }
   }
 
   useEffect(() => { loadAll() }, [bookId, isAuthenticated])
 
+  const canReview = (status?.reviewableItems?.length ?? 0) > 0
+  const hasBought = canReview || (status?.myReviews?.length ?? 0) > 0
+  const fmtDate = (s) => s ? new Date(s).toLocaleDateString('vi-VN') : ''
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (form.rating === 0) { toast.error('Vui lòng chọn số sao đánh giá'); return }
+    const orderItemId = status?.reviewableItems?.[0]?.orderItemId
+    if (!orderItemId) return
     setSubmitting(true)
     try {
-      await reviewsApi.createReview(bookId, form)
+      await reviewsApi.createReview(bookId, { ...form, orderItemId })
       toast.success('Đã gửi đánh giá!')
       setForm({ rating: 0, comment: '' })
       await loadAll()
@@ -229,9 +235,9 @@ function ReviewSection({ bookId, isAuthenticated }) {
     } finally { setSubmitting(false) }
   }
 
-  const startEdit = () => {
-    setEditForm({ rating: status.myReview.rating, comment: status.myReview.comment || '' })
-    setEditing(true)
+  const startEdit = (review) => {
+    setEditForm({ rating: review.rating, comment: review.comment || '' })
+    setEditingId(review.id)
   }
 
   const handleUpdate = async (e) => {
@@ -239,28 +245,26 @@ function ReviewSection({ bookId, isAuthenticated }) {
     if (editForm.rating === 0) { toast.error('Vui lòng chọn số sao'); return }
     setEditSubmitting(true)
     try {
-      await reviewsApi.updateReview(status.myReview.id, editForm)
+      await reviewsApi.updateReview(editingId, editForm)
       toast.success('Đã cập nhật đánh giá!')
-      setEditing(false)
+      setEditingId(null)
       await loadAll()
     } catch (err) {
       toast.error(err?.response?.data?.message || 'Cập nhật thất bại')
     } finally { setEditSubmitting(false) }
   }
 
-  const handleDelete = async () => {
+  const handleDelete = async (reviewId) => {
     if (!window.confirm('Xóa đánh giá này?')) return
     try {
-      await reviewsApi.deleteReview(status.myReview.id)
+      await reviewsApi.deleteReview(reviewId)
       toast.success('Đã xóa đánh giá')
-      setEditing(false)
+      setEditingId(null)
       await loadAll()
     } catch (err) {
       toast.error(err?.response?.data?.message || 'Xóa thất bại')
     }
   }
-
-  const fmtDate = (s) => new Date(s).toLocaleDateString('vi-VN')
 
   return (
     <div className="mt-12 border-t border-gray-100 pt-8">
@@ -272,10 +276,16 @@ function ReviewSection({ bookId, isAuthenticated }) {
         )}
       </div>
 
-      {/* Create form */}
-      {isAuthenticated && status?.canReview && (
+      {/* Create form — shown for each unreviewed delivered order item */}
+      {isAuthenticated && canReview && (
         <form onSubmit={handleSubmit} className="bg-indigo-50 border border-indigo-100 rounded-2xl p-5 mb-6 space-y-3">
-          <p className="text-sm font-semibold text-indigo-700">Viết đánh giá của bạn</p>
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-semibold text-indigo-700">Viết đánh giá của bạn</p>
+            <span className="text-xs text-indigo-400">
+              Đơn #{status.reviewableItems[0]?.orderCode}
+              {status.reviewableItems.length > 1 && ` · còn ${status.reviewableItems.length - 1} đơn chờ đánh giá`}
+            </span>
+          </div>
           <StarPicker value={form.rating} onChange={r => setForm(f => ({ ...f, rating: r }))} />
           <textarea
             value={form.comment}
@@ -294,18 +304,18 @@ function ReviewSection({ bookId, isAuthenticated }) {
         </form>
       )}
 
-      {/* My review – view or edit */}
-      {status?.myReview && (
-        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-6">
+      {/* My reviews (one card per review) */}
+      {status?.myReviews?.map(myReview => (
+        <div key={myReview.id} className="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-4">
           <div className="flex items-center justify-between mb-2">
             <p className="text-xs font-semibold text-amber-600">Đánh giá của bạn</p>
-            {!editing && (
+            {editingId !== myReview.id && (
               <div className="flex items-center gap-1">
-                <button onClick={startEdit}
+                <button onClick={() => startEdit(myReview)}
                   className="flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-800 px-2 py-1 rounded-lg hover:bg-indigo-50 transition-colors">
                   <Pencil className="h-3 w-3" /> Sửa
                 </button>
-                <button onClick={handleDelete}
+                <button onClick={() => handleDelete(myReview.id)}
                   className="flex items-center gap-1 text-xs text-red-500 hover:text-red-700 px-2 py-1 rounded-lg hover:bg-red-50 transition-colors">
                   <Trash2 className="h-3 w-3" /> Xóa
                 </button>
@@ -313,7 +323,7 @@ function ReviewSection({ bookId, isAuthenticated }) {
             )}
           </div>
 
-          {editing ? (
+          {editingId === myReview.id ? (
             <form onSubmit={handleUpdate} className="space-y-3">
               <StarPicker value={editForm.rating} onChange={r => setEditForm(f => ({ ...f, rating: r }))} />
               <textarea
@@ -323,7 +333,7 @@ function ReviewSection({ bookId, isAuthenticated }) {
                 className="w-full px-3 py-2 text-sm border border-amber-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-amber-400 resize-none"
               />
               <div className="flex items-center gap-2 justify-end">
-                <button type="button" onClick={() => setEditing(false)}
+                <button type="button" onClick={() => setEditingId(null)}
                   className="px-4 py-1.5 text-sm text-gray-600 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
                   Hủy
                 </button>
@@ -337,24 +347,31 @@ function ReviewSection({ bookId, isAuthenticated }) {
             <>
               <div className="flex items-center gap-0.5 mb-1">
                 {[1,2,3,4,5].map(s => (
-                  <Star key={s} className={`h-4 w-4 ${s <= status.myReview.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-200'}`} />
+                  <Star key={s} className={`h-4 w-4 ${s <= myReview.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-200'}`} />
                 ))}
               </div>
-              {status.myReview.comment && <p className="text-sm text-gray-700 mt-1">{status.myReview.comment}</p>}
-              <p className="text-xs text-gray-400 mt-1">{fmtDate(status.myReview.createdAt)}</p>
+              {myReview.comment && <p className="text-sm text-gray-700 mt-1">{myReview.comment}</p>}
+              <p className="text-xs text-gray-400 mt-1">{fmtDate(myReview.createdAt)}</p>
+              {myReview.shopReply && (
+                <div className="mt-3 bg-white border border-amber-100 rounded-lg p-3">
+                  <p className="text-xs font-semibold text-gray-500 mb-1">Phản hồi từ {myReview.shopName || 'Shop'}</p>
+                  <p className="text-sm text-gray-600">{myReview.shopReply}</p>
+                  <p className="text-xs text-gray-400 mt-1">{fmtDate(myReview.repliedAt)}</p>
+                </div>
+              )}
             </>
           )}
         </div>
-      )}
+      ))}
 
       {/* Not purchased prompt */}
-      {isAuthenticated && status && !status.hasPurchased && (
+      {isAuthenticated && status && !hasBought && (
         <div className="bg-gray-50 rounded-xl p-4 mb-6 text-sm text-gray-500 text-center">
           Mua và nhận sách này để có thể viết đánh giá.
         </div>
       )}
 
-      {/* Reviews list */}
+      {/* All reviews list */}
       {reviews.length === 0 ? (
         <p className="text-sm text-gray-400 text-center py-8">Chưa có đánh giá nào. Hãy là người đầu tiên!</p>
       ) : (
@@ -376,6 +393,13 @@ function ReviewSection({ bookId, isAuthenticated }) {
                 ))}
               </div>
               {r.comment && <p className="text-sm text-gray-600 leading-relaxed">{r.comment}</p>}
+              {r.shopReply && (
+                <div className="mt-3 bg-gray-50 border border-gray-100 rounded-lg p-3">
+                  <p className="text-xs font-semibold text-gray-500 mb-1">Phản hồi từ {r.shopName || 'Shop'}</p>
+                  <p className="text-sm text-gray-600">{r.shopReply}</p>
+                  {r.repliedAt && <p className="text-xs text-gray-400 mt-1">{fmtDate(r.repliedAt)}</p>}
+                </div>
+              )}
             </div>
           ))}
         </div>

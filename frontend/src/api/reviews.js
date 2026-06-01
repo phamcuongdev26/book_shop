@@ -15,4 +15,7 @@ export const reviewsApi = {
 
   deleteReview: (reviewId) =>
     api.delete(`/api/reviews/${reviewId}`),
+
+  replyToReview: (reviewId, shopReply) =>
+    api.patch(`/api/reviews/${reviewId}/reply`, { shopReply }),
 }

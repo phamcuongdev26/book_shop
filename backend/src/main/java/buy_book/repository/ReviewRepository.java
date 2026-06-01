@@ -14,13 +14,12 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     List<Review> findByBookIdOrderByCreatedAtDesc(Long bookId);
 
-    Optional<Review> findByUserIdAndBookId(Long userId, Long bookId);
+    List<Review> findByUserIdAndBookIdOrderByCreatedAtDesc(Long userId, Long bookId);
 
-    boolean existsByUserIdAndBookId(Long userId, Long bookId);
+    boolean existsByOrderItemId(Long orderItemId);
+
+    Optional<Review> findByOrderItemId(Long orderItemId);
 
     @Query("SELECT AVG(r.rating) FROM Review r WHERE r.book.id = :bookId")
     Double avgRatingByBookId(@Param("bookId") Long bookId);
-
-    @Query("SELECT COUNT(r) FROM Review r WHERE r.book.id = :bookId")
-    Long countByBookId(@Param("bookId") Long bookId);
 }

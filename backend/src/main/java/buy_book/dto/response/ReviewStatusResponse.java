@@ -3,6 +3,8 @@ package buy_book.dto.response;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Builder
@@ -10,7 +12,6 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ReviewStatusResponse {
-    boolean canReview;
-    boolean hasPurchased;
-    ReviewResponse myReview;
+    List<OrderItemInfo> reviewableItems;
+    List<ReviewResponse> myReviews;
 }
