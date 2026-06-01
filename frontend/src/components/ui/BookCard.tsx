@@ -15,12 +15,7 @@ export function BookCard({ book }: { book: BookSummary }) {
 
   return (
     <Link to={`/books/${book.id}`} className="card group flex flex-col hover:shadow-md transition-shadow">
-      <div className="relative aspect-[3/4] bg-gradient-to-br from-slate-100 to-slate-50 overflow-hidden rounded-t-xl">
-        <img
-          src={book.imageUrl || PLACEHOLDER}
-          aria-hidden
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', filter: 'blur(18px)', transform: 'scale(1.15)', opacity: 0.55 }}
-        />
+      <div className="relative aspect-[3/4] bg-white overflow-hidden rounded-t-xl">
         <img
           src={book.imageUrl || PLACEHOLDER}
           alt={book.title}
