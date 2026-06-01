@@ -1,5 +1,6 @@
 package buy_book.controller;
 
+// v2
 import buy_book.constant.NotificationType;
 import buy_book.constant.Role;
 import buy_book.dto.request.BookRequest;
