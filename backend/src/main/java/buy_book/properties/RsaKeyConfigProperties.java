@@ -27,7 +27,7 @@ public class RsaKeyConfigProperties {
         if (publicKeyPem == null || publicKeyPem.isBlank())
             publicKeyPem = readClasspath("certs/public-key.pem");
         if (privateKeyPem == null || privateKeyPem.isBlank())
-            privateKeyPem = readClasspath("certs/private-key.pem");
+            throw new IllegalStateException("Env RSA_PRIVATE_KEY is required but not set. Do not bundle private key in classpath.");
         this.publicKey = parsePublicKey(publicKeyPem);
         this.privateKey = parsePrivateKey(privateKeyPem);
     }

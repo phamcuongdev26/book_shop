@@ -30,13 +30,23 @@ public class GlobalExceptionHandler {
                         .build());
     }
 
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ApiResponse<Void>> handleRuntimeException(RuntimeException ex) {
+        return ResponseEntity
+                .status(400)
+                .body(ApiResponse.<Void>builder()
+                        .code(400)
+                        .message(ex.getMessage())
+                        .build());
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleException(Exception ex) {
         return ResponseEntity
                 .status(500)
                 .body(ApiResponse.<Void>builder()
                         .code(9999)
-                        .message("Lỗi hệ thống: " + ex.getMessage())
+                        .message("Lỗi hệ thống, vui lòng thử lại sau")
                         .build());
     }
 }

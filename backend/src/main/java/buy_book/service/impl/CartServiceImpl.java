@@ -47,8 +47,6 @@ public class CartServiceImpl implements CartService {
                 .orElseThrow(() -> new AppException(ErrorCode.BOOK_NOT_FOUND));
 
         if (!book.isActive()) throw new AppException(ErrorCode.BOOK_INACTIVE);
-        if (book.getStockQuantity() < request.getQuantity())
-            throw new AppException(ErrorCode.OUT_OF_STOCK);
 
         Cart cart = getOrCreateCart(user);
 
@@ -56,7 +54,11 @@ public class CartServiceImpl implements CartService {
                 .findByCartIdAndBookId(cart.getId(), book.getId())
                 .orElse(CartItem.builder().cart(cart).book(book).quantity(0).build());
 
-        cartItem.setQuantity(cartItem.getQuantity() + request.getQuantity());
+        int newQty = cartItem.getQuantity() + request.getQuantity();
+        if (newQty > book.getStockQuantity())
+            throw new AppException(ErrorCode.OUT_OF_STOCK);
+
+        cartItem.setQuantity(newQty);
         cartItemRepository.save(cartItem);
 
         return toCartResponse(cartRepository.findById(cart.getId()).get());
@@ -77,6 +79,8 @@ public class CartServiceImpl implements CartService {
         if (quantity <= 0) {
             cartItemRepository.delete(cartItem);
         } else {
+            if (quantity > cartItem.getBook().getStockQuantity())
+                throw new AppException(ErrorCode.OUT_OF_STOCK);
             cartItem.setQuantity(quantity);
             cartItemRepository.save(cartItem);
         }
