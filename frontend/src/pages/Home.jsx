@@ -550,11 +550,12 @@ function SectionCard({ book, type, isStatic = false }) {
   const hasDiscount = book.discountPrice != null && book.discountPrice < book.price
   const price = book.discountPrice ?? book.price
 
-  const cardClass = "shrink-0 w-40 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200 overflow-hidden group cursor-pointer"
+  const cardClass = "shrink-0 w-40 hover:-translate-y-1 transition-all duration-200 group cursor-pointer"
 
   const inner = (
     <>
-      <div className="relative overflow-hidden bg-white" style={{ aspectRatio: '3/4' }}>
+      {/* Khung ảnh 3:4 */}
+      <div className="relative overflow-hidden bg-white rounded-xl border border-gray-100 shadow-sm group-hover:shadow-md transition-shadow" style={{ aspectRatio: '3/4' }}>
         <img
           src={book.imageUrl || 'https://placehold.co/300x400?text=No+Image'}
           alt={book.title}
@@ -580,10 +581,11 @@ function SectionCard({ book, type, isStatic = false }) {
           </span>
         )}
       </div>
-      <div className="p-2">
-        <p className="text-xs font-semibold text-gray-800 line-clamp-2 leading-snug mb-1">{book.title}</p>
-        <p className="text-xs text-gray-400 mb-0.5">{book.author ?? book.brand}</p>
-        <p className="text-sm font-bold text-indigo-600">{formatPrice(price)}</p>
+      {/* Chữ bên dưới khung */}
+      <div className="pt-2 px-0.5">
+        <p className="text-xs font-semibold text-gray-800 line-clamp-2 leading-snug mb-0.5">{book.title}</p>
+        <p className="text-xs text-gray-400">{book.author ?? book.brand}</p>
+        <p className="text-sm font-bold text-indigo-600 mt-1">{formatPrice(price)}</p>
         {hasDiscount && (
           <p className="text-xs text-gray-400 line-through">{formatPrice(book.price)}</p>
         )}
@@ -638,9 +640,9 @@ function FlashCard({ book }) {
   return (
     <Link
       to={`/books/${book.id}`}
-      className="shrink-0 w-40 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-200 overflow-hidden group"
+      className="shrink-0 w-40 hover:-translate-y-1 transition-all duration-200 group"
     >
-      <div className="relative overflow-hidden bg-white" style={{ aspectRatio: '3/4' }}>
+      <div className="relative overflow-hidden bg-white rounded-xl border border-gray-100 shadow-sm group-hover:shadow-md transition-shadow" style={{ aspectRatio: '3/4' }}>
         <img
           src={book.imageUrl || 'https://placehold.co/300x400?text=No+Image'}
           alt={book.title}
@@ -652,9 +654,10 @@ function FlashCard({ book }) {
           -{discount}%
         </span>
       </div>
-      <div className="p-2">
-        <p className="text-xs font-semibold text-gray-800 line-clamp-2 leading-snug mb-1">{book.title}</p>
-        <p className="text-sm font-bold text-rose-600">{formatPrice(book.discountPrice)}</p>
+      {/* Chữ bên dưới khung */}
+      <div className="pt-2 px-0.5">
+        <p className="text-xs font-semibold text-gray-800 line-clamp-2 leading-snug mb-0.5">{book.title}</p>
+        <p className="text-sm font-bold text-rose-600 mt-1">{formatPrice(book.discountPrice)}</p>
         <p className="text-xs text-gray-400 line-through">{formatPrice(book.price)}</p>
       </div>
     </Link>

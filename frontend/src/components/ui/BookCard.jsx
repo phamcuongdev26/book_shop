@@ -27,9 +27,10 @@ export function BookCard({ book, colorIndex = 0 }) {
   return (
     <Link
       to={`/books/${book.id}`}
-      className="card group flex flex-col hover:shadow-lg hover:-translate-y-1 transition-all duration-200"
+      className="group flex flex-col hover:-translate-y-1 transition-all duration-200"
     >
-      <div className="relative overflow-hidden bg-white" style={{ aspectRatio: '3/4' }}>
+      {/* Khung ảnh 3:4 */}
+      <div className="relative overflow-hidden bg-white rounded-xl border border-gray-100 shadow-sm group-hover:shadow-md transition-shadow" style={{ aspectRatio: '3/4' }}>
         <img
           src={book.imageUrl || PLACEHOLDER}
           alt={book.title}
@@ -56,14 +57,14 @@ export function BookCard({ book, colorIndex = 0 }) {
         )}
       </div>
 
-      <div className="p-3 flex flex-col gap-1 flex-1">
+      {/* Chữ bên dưới khung */}
+      <div className="pt-2 px-0.5 flex flex-col gap-0.5">
         <p className={`text-xs font-medium ${catColor}`}>{book.categoryName}</p>
-        <h3 className="text-sm font-semibold text-gray-900 line-clamp-3 leading-snug group-hover:text-indigo-700 transition-colors">
+        <h3 className="text-sm font-semibold text-gray-900 line-clamp-2 leading-snug group-hover:text-indigo-700 transition-colors">
           {book.title}
         </h3>
         <p className="text-xs text-gray-400">{book.author}</p>
-
-        <div className="mt-auto pt-2 flex items-end justify-between">
+        <div className="pt-1 flex items-end justify-between">
           <div>
             <p className="text-sm font-bold text-indigo-600">{formatPrice(effectivePrice)}</p>
             {hasDiscount && (
