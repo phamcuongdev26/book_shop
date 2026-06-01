@@ -530,7 +530,7 @@ function SectionRow({ books, title, icon: Icon, headerColor, subtitle, cardType,
               className={`shrink-0 transition-all duration-500 ${visible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'}`}
               style={{ transitionDelay: `${i * 55}ms` }}
             >
-              <SectionCard book={book} type={cardType} isStatic={staticItems} />
+              <SectionCard book={book} type={cardType} isStatic={staticItems} featured={i === 0} />
             </div>
           ))}
         </div>
@@ -546,21 +546,21 @@ function SectionRow({ books, title, icon: Icon, headerColor, subtitle, cardType,
   )
 }
 
-function SectionCard({ book, type, isStatic = false }) {
+function SectionCard({ book, type, isStatic = false, featured = false }) {
   const hasDiscount = book.discountPrice != null && book.discountPrice < book.price
   const price = book.discountPrice ?? book.price
 
-  const cardClass = "shrink-0 w-40 hover:-translate-y-1 transition-all duration-200 group cursor-pointer"
+  const cardWidth = featured ? 'w-52' : 'w-40'
+  const imgHeight = featured ? 'h-60' : 'h-48'
+  const linkClass = `shrink-0 ${cardWidth} flex flex-col hover:-translate-y-1 transition-all duration-200 group cursor-pointer`
 
   const inner = (
     <>
-      {/* Khung ảnh 3:4 */}
-      <div className="relative overflow-hidden bg-[#f5f5f5] rounded-xl border border-gray-100 shadow-sm group-hover:shadow-md transition-shadow" style={{ aspectRatio: '2/3' }}>
+      <div className={`${imgHeight} w-full bg-gray-100 flex items-center justify-center rounded-xl border border-gray-100 shadow-sm group-hover:shadow-md transition-shadow overflow-hidden relative`}>
         <img
           src={book.imageUrl || 'https://placehold.co/300x400?text=No+Image'}
           alt={book.title}
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain' }}
-          className="group-hover:scale-105 transition-transform duration-300"
+          className="max-h-full max-w-full object-contain p-2 group-hover:scale-105 transition-transform duration-300"
           onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/300x400?text=No+Image' }}
         />
         {type === 'best_seller' && book.totalSold > 0 && (
@@ -581,7 +581,6 @@ function SectionCard({ book, type, isStatic = false }) {
           </span>
         )}
       </div>
-      {/* Chữ bên dưới khung */}
       <div className="pt-2 px-0.5">
         <p className="text-xs font-semibold text-gray-800 line-clamp-2 leading-snug mb-0.5">{book.title}</p>
         <p className="text-xs text-gray-400">{book.author ?? book.brand}</p>
@@ -594,8 +593,8 @@ function SectionCard({ book, type, isStatic = false }) {
   )
 
   return isStatic
-    ? <Link to={`/product/${book.id}`} className={cardClass}>{inner}</Link>
-    : <Link to={`/books/${book.id}`} className={cardClass}>{inner}</Link>
+    ? <Link to={`/product/${book.id}`} className={linkClass}>{inner}</Link>
+    : <Link to={`/books/${book.id}`} className={linkClass}>{inner}</Link>
 }
 
 // ── Flash Sale horizontal scroll row ─────────────────────────
@@ -640,21 +639,19 @@ function FlashCard({ book }) {
   return (
     <Link
       to={`/books/${book.id}`}
-      className="shrink-0 w-40 hover:-translate-y-1 transition-all duration-200 group"
+      className="shrink-0 w-40 flex flex-col hover:-translate-y-1 transition-all duration-200 group"
     >
-      <div className="relative overflow-hidden bg-[#f5f5f5] rounded-xl border border-gray-100 shadow-sm group-hover:shadow-md transition-shadow" style={{ aspectRatio: '2/3' }}>
+      <div className="h-48 w-full bg-gray-100 flex items-center justify-center rounded-xl border border-gray-100 shadow-sm group-hover:shadow-md transition-shadow overflow-hidden relative">
         <img
           src={book.imageUrl || 'https://placehold.co/300x400?text=No+Image'}
           alt={book.title}
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain' }}
-          className="group-hover:scale-105 transition-transform duration-300"
+          className="max-h-full max-w-full object-contain p-2 group-hover:scale-105 transition-transform duration-300"
           onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/300x400?text=No+Image' }}
         />
         <span className="absolute top-2 left-2 bg-rose-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-md shadow">
           -{discount}%
         </span>
       </div>
-      {/* Chữ bên dưới khung */}
       <div className="pt-2 px-0.5">
         <p className="text-xs font-semibold text-gray-800 line-clamp-2 leading-snug mb-0.5">{book.title}</p>
         <p className="text-sm font-bold text-rose-600 mt-1">{formatPrice(book.discountPrice)}</p>
