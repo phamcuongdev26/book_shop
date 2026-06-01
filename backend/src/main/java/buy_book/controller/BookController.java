@@ -1,12 +1,16 @@
 package buy_book.controller;
 
+import buy_book.constant.NotificationType;
+import buy_book.constant.Role;
 import buy_book.dto.request.BookRequest;
 import buy_book.dto.response.ApiResponse;
 import buy_book.dto.response.BookDetailResponse;
 import buy_book.dto.response.BookSummaryResponse;
 import buy_book.dto.response.PageResponse;
+import buy_book.repository.UserRepository;
 import buy_book.service.AuditLogService;
 import buy_book.service.BookService;
+import buy_book.service.NotificationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -28,6 +32,8 @@ public class BookController {
 
     private final BookService bookService;
     private final AuditLogService auditLogService;
+    private final NotificationService notificationService;
+    private final UserRepository userRepository;
     private final ObjectMapper objectMapper;
 
     // ==================== PUBLIC ====================
@@ -121,6 +127,9 @@ public class BookController {
                 toJson(bookMap(created)),
                 getClientIp(httpRequest));
 
+        notifyAdmins("Sản phẩm mới được thêm",
+                "Người dùng " + username + " đã thêm sách \"" + created.getTitle() + "\"");
+
         return ResponseEntity.ok(ApiResponse.<BookDetailResponse>builder()
                 .code(200)
                 .message("Thêm sách thành công")
@@ -146,6 +155,9 @@ public class BookController {
                 toJson(bookMap(updated)),
                 getClientIp(httpRequest));
 
+        notifyAdmins("Sản phẩm được cập nhật",
+                "Người dùng " + username + " đã cập nhật sách \"" + updated.getTitle() + "\"");
+
         return ResponseEntity.ok(ApiResponse.<BookDetailResponse>builder()
                 .code(200)
                 .message("Cập nhật sách thành công")
@@ -169,6 +181,9 @@ public class BookController {
                 toJson(bookMap(book)),
                 null,
                 getClientIp(httpRequest));
+
+        notifyAdmins("Sản phẩm bị xóa",
+                "Người dùng " + username + " đã xóa sách \"" + book.getTitle() + "\"");
 
         return ResponseEntity.ok(ApiResponse.<Void>builder()
                 .code(200)
@@ -223,5 +238,10 @@ public class BookController {
         String ip = request.getHeader("X-Forwarded-For");
         if (ip == null || ip.isBlank()) return request.getRemoteAddr();
         return ip.split(",")[0].trim();
+    }
+
+    private void notifyAdmins(String title, String message) {
+        userRepository.findByRole(Role.ADMIN).forEach(admin ->
+                notificationService.create(admin, title, message, NotificationType.SYSTEM, null, null));
     }
 }

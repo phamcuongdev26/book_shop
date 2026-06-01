@@ -138,18 +138,16 @@ export function Header() {
           <div className="ml-auto flex items-center gap-1">
             {isAuthenticated ? (
               <>
-                {(!hasRole('ADMIN') || isAdminPage) && (
-                  <NavLink to="/notifications" className={({ isActive }) =>
-                    `relative p-2 rounded-lg transition-colors ${isActive ? 'bg-indigo-50 text-indigo-700' : 'text-gray-600 hover:bg-gray-50'}`
-                  }>
-                    <Bell className="h-5 w-5" />
-                    {unreadCount > 0 && (
-                      <span className="absolute top-1 right-1 min-w-[16px] h-4 px-0.5 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center leading-none">
-                        {unreadCount > 99 ? '99+' : unreadCount}
-                      </span>
-                    )}
-                  </NavLink>
-                )}
+                <NavLink to="/notifications" className={({ isActive }) =>
+                  `relative p-2 rounded-lg transition-colors ${isActive ? 'bg-indigo-50 text-indigo-700' : 'text-gray-600 hover:bg-gray-50'}`
+                }>
+                  <Bell className="h-5 w-5" />
+                  {unreadCount > 0 && (
+                    <span className="absolute top-1 right-1 min-w-[16px] h-4 px-0.5 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center leading-none">
+                      {unreadCount > 99 ? '99+' : unreadCount}
+                    </span>
+                  )}
+                </NavLink>
 
                 {!hasRole('ADMIN') && !hasRole('SELLER') && (
                   <>
