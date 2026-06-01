@@ -64,10 +64,18 @@ export default function Home() {
   const titleSuggestRef = useRef(null)
   const titleTimerRef   = useRef(null)
 
+  // ── Author suggest ────────────────────────────────────────────
+  const [authorSuggestions, setAuthorSuggestions] = useState([])
+  const [showAuthorDrop,    setShowAuthorDrop]    = useState(false)
+  const authorSuggestRef = useRef(null)
+  const authorTimerRef   = useRef(null)
+
   useEffect(() => {
     const close = (e) => {
       if (titleSuggestRef.current && !titleSuggestRef.current.contains(e.target))
         setShowTitleDrop(false)
+      if (authorSuggestRef.current && !authorSuggestRef.current.contains(e.target))
+        setShowAuthorDrop(false)
     }
     document.addEventListener('mousedown', close)
     return () => document.removeEventListener('mousedown', close)
@@ -93,6 +101,50 @@ export default function Home() {
     setTitleSuggestions([])
     setShowTitleDrop(false)
     setApplied(a => ({ ...a, title: book.title }))
+    setPage(0)
+  }
+
+  const handleAuthorChange = (e) => {
+    const val = e.target.value
+    setAuthorInput(val)
+    clearTimeout(authorTimerRef.current)
+    if (val.trim().length < 2) {
+      setAuthorSuggestions([])
+      setShowAuthorDrop(false)
+      return
+    }
+
+    authorTimerRef.current = setTimeout(async () => {
+      try {
+        const keyword = val.trim().toLowerCase()
+        const res = await booksApi.filter({ author: val.trim(), size: 12 })
+        const items = res.data.result?.content || res.data.data?.content || []
+        const seen = new Set()
+        const authors = items
+          .map((book) => book.author)
+          .filter((author) => author && author.toLowerCase().includes(keyword))
+          .filter((author) => {
+            const key = author.trim().toLowerCase()
+            if (seen.has(key)) return false
+            seen.add(key)
+            return true
+          })
+          .slice(0, 8)
+
+        setAuthorSuggestions(authors)
+        setShowAuthorDrop(authors.length > 0)
+      } catch {
+        setAuthorSuggestions([])
+        setShowAuthorDrop(false)
+      }
+    }, 300)
+  }
+
+  const selectAuthor = (author) => {
+    setAuthorInput(author)
+    setAuthorSuggestions([])
+    setShowAuthorDrop(false)
+    setApplied(a => ({ ...a, author }))
     setPage(0)
   }
 
@@ -408,7 +460,7 @@ export default function Home() {
               </div>
 
               {/* Tác giả */}
-              <div>
+              <div ref={authorSuggestRef} className="relative">
                 <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Tác giả</p>
                 <div className="relative">
                   <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400" />
@@ -416,16 +468,33 @@ export default function Home() {
                     type="text"
                     placeholder="Nhập tên tác giả..."
                     value={authorInput}
-                    onChange={(e) => setAuthorInput(e.target.value)}
+                    onChange={handleAuthorChange}
                     onKeyDown={(e) => e.key === 'Enter' && applyFilters()}
+                    onFocus={() => authorSuggestions.length > 0 && setShowAuthorDrop(true)}
                     className="text-sm border border-gray-200 rounded-lg pl-8 pr-8 py-2 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 w-36"
                   />
                   {authorInput && (
-                    <button onClick={() => setAuthorInput('')} className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                    <button onClick={() => { setAuthorInput(''); setAuthorSuggestions([]); setShowAuthorDrop(false) }} className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
                       <X className="h-3.5 w-3.5" />
                     </button>
                   )}
                 </div>
+                {showAuthorDrop && authorSuggestions.length > 0 && (
+                  <div className="absolute top-full left-0 mt-1 w-56 bg-white border border-gray-200 rounded-xl shadow-xl z-50 overflow-hidden">
+                    <div className="max-h-56 overflow-y-auto">
+                      {authorSuggestions.map(author => (
+                        <button
+                          key={author}
+                          onMouseDown={() => selectAuthor(author)}
+                          className="w-full flex items-center gap-2 px-3 py-2.5 hover:bg-indigo-50 transition-colors text-left"
+                        >
+                          <Search className="h-3.5 w-3.5 text-gray-400 shrink-0" />
+                          <span className="text-sm text-gray-800 truncate">{author}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Năm xuất bản */}

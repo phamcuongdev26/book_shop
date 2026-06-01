@@ -156,14 +156,19 @@ export default function BookList() {
     if (!val.trim()) { setAuthorFilter(''); setAuthorSuggestions([]); setShowAuthorDrop(false); return }
     authorTimer.current = setTimeout(() => {
       setAuthorFilter(val.trim())
-      booksApi.search({ keyword: val.trim(), size: 20 })
+      booksApi.filter({ author: val.trim(), size: 20 })
         .then((res) => {
-          const all = res.data?.data?.content || []
+          const all = res.data?.result?.content || res.data?.data?.content || []
           const kw = val.trim().toLowerCase()
           const seen = new Set()
           const unique = all
             .filter(b => b.author && b.author.toLowerCase().includes(kw))
-            .filter(b => { if (seen.has(b.author)) return false; seen.add(b.author); return true })
+            .filter(b => {
+              const key = b.author.trim().toLowerCase()
+              if (seen.has(key)) return false
+              seen.add(key)
+              return true
+            })
             .slice(0, 7)
           setAuthorSuggestions(unique)
           setShowAuthorDrop(unique.length > 0)
