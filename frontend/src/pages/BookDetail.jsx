@@ -108,8 +108,14 @@ function CheckoutModal({ book, qty, onClose }) {
             <label className="block text-sm font-medium text-gray-700 mb-1.5">
               <span className="flex items-center gap-1.5"><Phone className="h-3.5 w-3.5" /> Số điện thoại <span className="text-rose-500">*</span></span>
             </label>
-            <input value={form.recipientPhone} onChange={set('recipientPhone')} placeholder="0912 345 678" inputMode="numeric"
-              className={`w-full px-3.5 py-2.5 rounded-xl border text-sm outline-none transition-colors ${errors.recipientPhone ? 'border-rose-400 bg-rose-50' : 'border-gray-200 bg-gray-50 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100'}`} />
+            <input
+              value={form.recipientPhone}
+              onChange={(e) => { const v = e.target.value.replace(/\D/g, '').slice(0, 15); setForm(f => ({ ...f, recipientPhone: v })); setErrors(err => ({ ...err, recipientPhone: '' })) }}
+              placeholder="0912 345 678"
+              inputMode="numeric"
+              maxLength={15}
+              className={`w-full px-3.5 py-2.5 rounded-xl border text-sm outline-none transition-colors ${errors.recipientPhone ? 'border-rose-400 bg-rose-50' : 'border-gray-200 bg-gray-50 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100'}`}
+            />
             {errors.recipientPhone && <p className="text-xs text-rose-500 mt-1">{errors.recipientPhone}</p>}
           </div>
 

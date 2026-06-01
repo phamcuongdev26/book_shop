@@ -157,9 +157,10 @@ function OrderModal({ product, qty, onClose }) {
             </label>
             <input
               value={form.recipientPhone}
-              onChange={set('recipientPhone')}
+              onChange={(e) => { const v = e.target.value.replace(/\D/g, '').slice(0, 15); setForm(f => ({ ...f, recipientPhone: v })); setErrors(err => ({ ...err, recipientPhone: '' })) }}
               placeholder="0912 345 678"
               inputMode="numeric"
+              maxLength={15}
               className={`w-full px-3.5 py-2.5 rounded-xl border text-sm outline-none transition-colors
                 ${errors.recipientPhone
                   ? 'border-rose-400 bg-rose-50 focus:ring-2 focus:ring-rose-200'
