@@ -5,6 +5,7 @@ import { usersApi } from '../../api/users'
 import { PageSpinner } from '../../components/ui/Spinner'
 
 const ROLES = ['USER', 'SELLER', 'ADMIN']
+const ROLE_LEVEL = { USER: 0, SELLER: 1, ADMIN: 2 }
 
 const ROLE_META = {
   USER:   { label: 'Người dùng', color: 'bg-gray-100 text-gray-700',    icon: User },
@@ -35,6 +36,7 @@ export default function ManageUsers() {
   const [showModal, setShowModal]   = useState(false)
   const [editId, setEditId]         = useState(null)
   const [form, setForm]             = useState(EMPTY)
+  const [originalRole, setOriginalRole] = useState('USER')
   const [saving, setSaving]         = useState(false)
   const [lockingId, setLockingId]   = useState(null)
   const [search, setSearch]         = useState('')
@@ -48,10 +50,11 @@ export default function ManageUsers() {
 
   useEffect(() => { fetchUsers() }, [])
 
-  const openCreate = () => { setEditId(null); setForm(EMPTY); setShowModal(true) }
+  const openCreate = () => { setEditId(null); setForm(EMPTY); setOriginalRole('USER'); setShowModal(true) }
 
   const openEdit = (u) => {
     setEditId(u.id)
+    setOriginalRole(u.role || 'USER')
     setForm({
       username:    u.username    || '',
       email:       u.email       || '',
@@ -283,8 +286,14 @@ export default function ManageUsers() {
                   <label className="block text-xs font-semibold text-gray-600 mb-1">Vai trò</label>
                   <select value={form.role} onChange={set('role')}
                     className="w-full px-3 py-2 text-sm border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-400">
-                    {ROLES.map(r => <option key={r} value={r}>{ROLE_META[r]?.label || r}</option>)}
+                    {ROLES
+                      .filter(r => !editId || ROLE_LEVEL[r] >= ROLE_LEVEL[originalRole])
+                      .map(r => <option key={r} value={r}>{ROLE_META[r]?.label || r}</option>)
+                    }
                   </select>
+                  {editId && ROLE_LEVEL[originalRole] > 0 && (
+                    <p className="text-xs text-amber-600 mt-1">Chỉ có thể nâng vai trò, không thể hạ xuống.</p>
+                  )}
                 </div>
               </div>
 
