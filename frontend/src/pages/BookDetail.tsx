@@ -221,9 +221,11 @@ export default function BookDetailPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16">
           <div className="flex justify-center">
-            <div className="w-full max-w-xs aspect-[3/4] bg-white rounded-xl overflow-hidden border border-gray-200">
+            <div className="w-full max-w-xs aspect-[3/4] bg-gray-100 rounded-xl overflow-hidden border border-gray-200 relative">
+              <img src={book.imageUrl || PLACEHOLDER} aria-hidden
+                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', filter: 'blur(18px)', transform: 'scale(1.15)', opacity: 0.55 }} />
               <img src={book.imageUrl || PLACEHOLDER} alt={book.title}
-                className="w-full h-full object-cover"
+                className="absolute inset-0 w-full h-full object-contain"
                 onError={(e) => { (e.target as HTMLImageElement).src = PLACEHOLDER }} />
             </div>
           </div>

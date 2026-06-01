@@ -18,8 +18,13 @@ export function BookCard({ book }: { book: BookSummary }) {
       <div className="relative aspect-[3/4] bg-gradient-to-br from-slate-100 to-slate-50 overflow-hidden rounded-t-xl">
         <img
           src={book.imageUrl || PLACEHOLDER}
+          aria-hidden
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', filter: 'blur(18px)', transform: 'scale(1.15)', opacity: 0.55 }}
+        />
+        <img
+          src={book.imageUrl || PLACEHOLDER}
           alt={book.title}
-          className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
+          className="absolute inset-0 h-full w-full object-contain group-hover:scale-105 transition-transform duration-300"
           onError={(e) => { (e.target as HTMLImageElement).src = PLACEHOLDER }}
         />
         {outOfStock && (

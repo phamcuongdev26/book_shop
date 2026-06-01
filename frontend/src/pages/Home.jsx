@@ -557,8 +557,13 @@ function SectionCard({ book, type, isStatic = false }) {
       <div className="relative overflow-hidden bg-gray-100" style={{ aspectRatio: '3/4' }}>
         <img
           src={book.imageUrl || 'https://placehold.co/300x400?text=No+Image'}
+          aria-hidden="true"
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', filter: 'blur(18px)', transform: 'scale(1.15)', opacity: 0.55 }}
+        />
+        <img
+          src={book.imageUrl || 'https://placehold.co/300x400?text=No+Image'}
           alt={book.title}
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain' }}
           className="group-hover:scale-105 transition-transform duration-300"
           onError={(e) => { e.target.src = 'https://placehold.co/300x400?text=No+Image' }}
         />
@@ -643,8 +648,13 @@ function FlashCard({ book }) {
       <div className="relative overflow-hidden bg-gray-100" style={{ aspectRatio: '3/4' }}>
         <img
           src={book.imageUrl || 'https://placehold.co/300x400?text=No+Image'}
+          aria-hidden="true"
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', filter: 'blur(18px)', transform: 'scale(1.15)', opacity: 0.55 }}
+        />
+        <img
+          src={book.imageUrl || 'https://placehold.co/300x400?text=No+Image'}
           alt={book.title}
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain' }}
           className="group-hover:scale-105 transition-transform duration-300"
           onError={(e) => { e.target.src = 'https://placehold.co/300x400?text=No+Image' }}
         />
