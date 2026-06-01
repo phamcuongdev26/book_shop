@@ -13,5 +13,6 @@ public interface AdminOrderService {
     List<OrderResponse> getSellerOrdersByStatus(String sellerUsername, OrderStatus status);
     OrderResponse getOrderById(Long id);
     OrderResponse updateOrderStatus(Long id, OrderStatus status);
+    OrderResponse updateSellerOrderStatus(Long orderId, String sellerUsername, OrderStatus status);
     OrderResponse createOrder(AdminCreateOrderRequest request);
 }

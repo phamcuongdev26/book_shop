@@ -303,6 +303,13 @@ const VALID_NEXT = {
   DELIVERED:  ['RETURNED'],
 }
 
+const SELLER_VALID_NEXT = {
+  PENDING:    ['CONFIRMED'],
+  CONFIRMED:  ['PROCESSING'],
+  PROCESSING: ['SHIPPING'],
+  SHIPPING:   ['DELIVERED'],
+}
+
 // ── Trang chính ─────────────────────────────────────────────────
 export default function ManageOrders() {
   const location = useLocation()
@@ -330,7 +337,11 @@ export default function ManageOrders() {
   const updateStatus = async (orderId, currentStatus, newStatus) => {
     if (newStatus === currentStatus) return
     try {
-      await ordersApi.updateStatus(orderId, newStatus)
+      if (isSellerPage) {
+        await ordersApi.updateSellerStatus(orderId, newStatus)
+      } else {
+        await ordersApi.updateStatus(orderId, newStatus)
+      }
       toast.success('Cập nhật trạng thái thành công!')
       fetchOrders()
     } catch (err) {
@@ -387,13 +398,13 @@ export default function ManageOrders() {
               <th className="px-4 py-3">Sản phẩm</th>
               <th className="px-4 py-3">Tổng tiền</th>
               <th className="px-4 py-3">Trạng thái</th>
-              {!isSellerPage && <th className="px-4 py-3">Cập nhật</th>}
+              <th className="px-4 py-3">Cập nhật</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-50">
             {displayed.length === 0 ? (
               <tr>
-                <td colSpan={isSellerPage ? 6 : 9} className="px-4 py-16 text-center text-gray-400">
+                <td colSpan={isSellerPage ? 7 : 9} className="px-4 py-16 text-center text-gray-400">
                   <Package className="h-10 w-10 mx-auto mb-2 text-gray-300" />
                   Không có đơn hàng nào
                 </td>
@@ -425,22 +436,23 @@ export default function ManageOrders() {
                     {STATUS_LABEL[order.status]}
                   </span>
                 </td>
-                {!isSellerPage && (
-                  <td className="px-4 py-3">
-                    {['CANCELLED', 'RETURNED'].includes(order.status) ? (
-                      <span className="text-xs text-gray-400 italic">Đã kết thúc</span>
-                    ) : (
+                <td className="px-4 py-3">
+                  {['CANCELLED', 'RETURNED'].includes(order.status) || (isSellerPage && order.status === 'DELIVERED') ? (
+                    <span className="text-xs text-gray-400 italic">Đã kết thúc</span>
+                  ) : (
                     <select value={order.status} onChange={(e) => updateStatus(order.id, order.status, e.target.value)}
                       className="text-xs border border-gray-200 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-400 bg-white">
                       {Object.entries(STATUS_LABEL)
-                        .filter(([s]) => s === order.status || (VALID_NEXT[order.status] ?? []).includes(s))
+                        .filter(([s]) => {
+                          const validNext = isSellerPage ? (SELLER_VALID_NEXT[order.status] ?? []) : (VALID_NEXT[order.status] ?? [])
+                          return s === order.status || validNext.includes(s)
+                        })
                         .map(([s, label]) => (
                           <option key={s} value={s}>{label}</option>
                         ))}
                     </select>
-                    )}
-                  </td>
-                )}
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>

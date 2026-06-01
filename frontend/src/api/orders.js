@@ -16,6 +16,9 @@ export const ordersApi = {
   updateStatus: (orderId, status) =>
     api.patch(`/api/admin/orders/${orderId}/status`, { status }),
 
+  updateSellerStatus: (orderId, status) =>
+    api.patch(`/api/seller/orders/${orderId}/status`, { status }),
+
   adminCreateOrder: (data) =>
     api.post('/api/admin/orders', data),
 

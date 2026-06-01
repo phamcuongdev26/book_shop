@@ -222,6 +222,58 @@ public class AdminOrderServiceImpl implements AdminOrderService {
 
     @Override
     @Transactional
+    public OrderResponse updateSellerOrderStatus(Long orderId, String sellerUsername, OrderStatus status) {
+        User seller = userRepository.findByUsername(sellerUsername)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+
+        boolean sellerOwnsItem = order.getItems().stream()
+                .anyMatch(item -> item.getBook().getSeller() != null
+                        && item.getBook().getSeller().getId().equals(seller.getId()));
+        if (!sellerOwnsItem) {
+            throw new RuntimeException("Bạn không có quyền cập nhật đơn hàng này.");
+        }
+
+        OrderStatus current = order.getStatus();
+        if (current == status) return toSellerResponse(order, seller.getId());
+
+        if (current == OrderStatus.CANCELLED || current == OrderStatus.RETURNED) {
+            throw new RuntimeException("Đơn hàng đã " + statusLabel(current) + ", không thể thay đổi trạng thái.");
+        }
+
+        boolean validTransition = switch (current) {
+            case PENDING    -> status == OrderStatus.CONFIRMED;
+            case CONFIRMED  -> status == OrderStatus.PROCESSING;
+            case PROCESSING -> status == OrderStatus.SHIPPING;
+            case SHIPPING   -> status == OrderStatus.DELIVERED;
+            default         -> false;
+        };
+        if (!validTransition) {
+            throw new RuntimeException(
+                    "Shop không thể chuyển từ \"" + statusLabel(current) + "\" sang \"" + statusLabel(status) + "\".");
+        }
+
+        order.setStatus(status);
+        Order saved = orderRepository.save(order);
+
+        notificationService.create(saved.getUser(),
+                "Cập nhật đơn hàng từ shop",
+                "Đơn hàng #" + saved.getOrderCode() + " đã được shop cập nhật sang trạng thái: " + statusLabel(status),
+                NotificationType.ORDER_STATUS_CHANGED,
+                saved.getId(), saved.getOrderCode());
+
+        notifyAdmins(saved,
+                "Shop cập nhật đơn hàng",
+                "Shop " + sellerUsername + " đã cập nhật đơn hàng #" + saved.getOrderCode() + " → " + statusLabel(status),
+                NotificationType.ORDER_STATUS_CHANGED);
+
+        return toSellerResponse(saved, seller.getId());
+    }
+
+    @Override
+    @Transactional
     public OrderResponse createOrder(AdminCreateOrderRequest request) {
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
