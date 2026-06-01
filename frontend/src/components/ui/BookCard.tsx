@@ -15,7 +15,7 @@ export function BookCard({ book }: { book: BookSummary }) {
 
   return (
     <Link to={`/books/${book.id}`} className="card group flex flex-col hover:shadow-md transition-shadow">
-      <div className="relative aspect-[3/4] bg-white overflow-hidden rounded-t-xl">
+      <div className="relative aspect-[2/3] bg-[#f5f5f5] overflow-hidden rounded-t-xl">
         <img
           src={book.imageUrl || PLACEHOLDER}
           alt={book.title}

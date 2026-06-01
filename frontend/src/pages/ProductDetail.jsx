@@ -301,7 +301,7 @@ export default function ProductDetail() {
 
           {/* ── Cột ảnh ── */}
           <div className="space-y-3">
-            <div className="w-full rounded-2xl overflow-hidden border border-gray-200 bg-white" style={{ aspectRatio: '3/4', position: 'relative' }}>
+            <div className="w-full rounded-2xl overflow-hidden border border-gray-200 bg-[#f5f5f5]" style={{ aspectRatio: '2/3', position: 'relative' }}>
               <img
                 src={product.imageUrl || PLACEHOLDER}
                 alt={product.title}

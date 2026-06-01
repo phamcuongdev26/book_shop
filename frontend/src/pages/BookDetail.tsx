@@ -221,7 +221,7 @@ export default function BookDetailPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16">
           <div className="flex justify-center">
-            <div className="w-full max-w-xs aspect-[3/4] bg-white rounded-xl overflow-hidden border border-gray-200 relative">
+            <div className="w-full max-w-xs aspect-[2/3] bg-white rounded-xl overflow-hidden border border-gray-200 relative">
               <img src={book.imageUrl || PLACEHOLDER} alt={book.title}
                 className="absolute inset-0 w-full h-full object-contain"
                 onError={(e) => { (e.target as HTMLImageElement).onerror = null; (e.target as HTMLImageElement).src = PLACEHOLDER }} />

@@ -555,7 +555,7 @@ function SectionCard({ book, type, isStatic = false }) {
   const inner = (
     <>
       {/* Khung ảnh 3:4 */}
-      <div className="relative overflow-hidden bg-white rounded-xl border border-gray-100 shadow-sm group-hover:shadow-md transition-shadow" style={{ aspectRatio: '3/4' }}>
+      <div className="relative overflow-hidden bg-[#f5f5f5] rounded-xl border border-gray-100 shadow-sm group-hover:shadow-md transition-shadow" style={{ aspectRatio: '2/3' }}>
         <img
           src={book.imageUrl || 'https://placehold.co/300x400?text=No+Image'}
           alt={book.title}
@@ -642,7 +642,7 @@ function FlashCard({ book }) {
       to={`/books/${book.id}`}
       className="shrink-0 w-40 hover:-translate-y-1 transition-all duration-200 group"
     >
-      <div className="relative overflow-hidden bg-white rounded-xl border border-gray-100 shadow-sm group-hover:shadow-md transition-shadow" style={{ aspectRatio: '3/4' }}>
+      <div className="relative overflow-hidden bg-[#f5f5f5] rounded-xl border border-gray-100 shadow-sm group-hover:shadow-md transition-shadow" style={{ aspectRatio: '2/3' }}>
         <img
           src={book.imageUrl || 'https://placehold.co/300x400?text=No+Image'}
           alt={book.title}

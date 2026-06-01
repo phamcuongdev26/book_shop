@@ -30,7 +30,7 @@ export function BookCard({ book, colorIndex = 0 }) {
       className="group flex flex-col hover:-translate-y-1 transition-all duration-200"
     >
       {/* Khung ảnh 3:4 */}
-      <div className="relative overflow-hidden bg-white rounded-xl border border-gray-100 shadow-sm group-hover:shadow-md transition-shadow" style={{ aspectRatio: '3/4' }}>
+      <div className="relative overflow-hidden bg-[#f5f5f5] rounded-xl border border-gray-100 shadow-sm group-hover:shadow-md transition-shadow" style={{ aspectRatio: '2/3' }}>
         <img
           src={book.imageUrl || PLACEHOLDER}
           alt={book.title}
