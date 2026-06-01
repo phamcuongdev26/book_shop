@@ -19,7 +19,6 @@ import buy_book.repository.UserRepository;
 import buy_book.service.AdminOrderService;
 import buy_book.service.NotificationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -190,14 +189,6 @@ public class AdminOrderServiceImpl implements AdminOrderService {
                 "Cập nhật đơn hàng",
                 "Đơn hàng #" + saved.getOrderCode() + " có sản phẩm của bạn đã chuyển sang trạng thái: " + statusLabel(status),
                 NotificationType.ORDER_STATUS_CHANGED);
-
-        String adminUsername = SecurityContextHolder.getContext().getAuthentication().getName();
-        userRepository.findByUsername(adminUsername).ifPresent(admin ->
-                notificationService.create(admin,
-                        "Đã cập nhật đơn hàng",
-                        "Bạn đã cập nhật đơn hàng #" + saved.getOrderCode() + " → " + statusLabel(status),
-                        NotificationType.SYSTEM,
-                        saved.getId(), saved.getOrderCode()));
 
         return toResponse(saved);
     }

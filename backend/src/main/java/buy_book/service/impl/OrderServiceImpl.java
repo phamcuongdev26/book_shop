@@ -1,7 +1,6 @@
 package buy_book.service.impl;
 
 import buy_book.constant.NotificationType;
-import buy_book.constant.Role;
 import buy_book.dto.request.CheckoutRequest;
 import buy_book.dto.response.CheckoutAllResponse;
 import buy_book.dto.response.OrderItemResponse;
@@ -306,17 +305,6 @@ public class OrderServiceImpl implements OrderService {
                 saved.getId(), saved.getOrderCode());
 
         return toOrderResponse(saved);
-    }
-
-    private void notifyAdmins(Order order) {
-        String message = "Đơn hàng #" + order.getOrderCode() + " vừa được đặt. Tổng tiền: "
-                + String.format("%,.0f", order.getTotalAmount()) + "đ";
-        userRepository.findByRole(Role.ADMIN).forEach(admin ->
-                notificationService.create(admin,
-                        "Đơn hàng mới",
-                        message,
-                        NotificationType.ORDER_PLACED,
-                        order.getId(), order.getOrderCode()));
     }
 
     private void notifySellers(Order order) {
