@@ -77,7 +77,8 @@ public class BookServiceImpl implements BookService {
                     .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
         }
 
-        if (request.getIsbn() != null && bookRepository.existsByIsbn(request.getIsbn())) {
+        String isbn = normalizeBlank(request.getIsbn());
+        if (isbn != null && bookRepository.existsByIsbn(isbn)) {
             throw new RuntimeException("ISBN đã tồn tại");
         }
 
@@ -96,7 +97,7 @@ public class BookServiceImpl implements BookService {
                 .discountPrice(request.getDiscountPrice())
                 .stockQuantity(request.getStockQuantity() != null ? request.getStockQuantity() : 0)
                 .imageUrl(request.getImageUrl())
-                .isbn(request.getIsbn())
+                .isbn(isbn)
                 .pageCount(request.getPageCount())
                 .language(request.getLanguage())
                 .category(category)
@@ -126,8 +127,9 @@ public class BookServiceImpl implements BookService {
                     .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
         }
 
-        if (request.getIsbn() != null && !request.getIsbn().equals(book.getIsbn())
-                && bookRepository.existsByIsbnAndIdNot(request.getIsbn(), id)) {
+        String isbn = normalizeBlank(request.getIsbn());
+        if (isbn != null && !isbn.equals(book.getIsbn())
+                && bookRepository.existsByIsbnAndIdNot(isbn, id)) {
             throw new RuntimeException("ISBN đã tồn tại");
         }
 
@@ -140,7 +142,7 @@ public class BookServiceImpl implements BookService {
         book.setDiscountPrice(request.getDiscountPrice());
         book.setStockQuantity(request.getStockQuantity());
         book.setImageUrl(request.getImageUrl());
-        book.setIsbn(request.getIsbn());
+        book.setIsbn(isbn);
         book.setPageCount(request.getPageCount());
         book.setLanguage(request.getLanguage());
         book.setCategory(category);
@@ -210,6 +212,12 @@ public class BookServiceImpl implements BookService {
     }
 
     // ==================== HELPER METHODS ====================
+
+    private String normalizeBlank(String value) {
+        if (value == null) return null;
+        String trimmed = value.trim();
+        return trimmed.isEmpty() ? null : trimmed;
+    }
 
     private Sort getSort(String sortBy) {
         if (sortBy == null) return Sort.by("createdAt").descending();
