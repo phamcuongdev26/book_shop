@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react'
+import { useSearchParams, useNavigate } from 'react-router-dom'
 import { Search, X } from 'lucide-react'
 import { booksApi } from '../api/books'
 import { BookCard } from '../components/ui/BookCard'
@@ -18,11 +18,12 @@ const SECTION_TITLES = {
 
 export default function BookList() {
   const [searchParams, setSearchParams] = useSearchParams()
-  const keyword     = searchParams.get('q')       || ''
-  const page        = Number(searchParams.get('page') || '0')
-  const section     = searchParams.get('section') || ''
-  const categorySlug = searchParams.get('categorySlug') || ''
-  const sortBy      = searchParams.get('sortBy')  || 'newest'
+  const navigate        = useNavigate()
+  const keyword         = searchParams.get('q')       || ''
+  const page            = Number(searchParams.get('page') || '0')
+  const section         = searchParams.get('section') || ''
+  const categorySlug    = searchParams.get('categorySlug') || ''
+  const sortBy          = searchParams.get('sortBy')  || 'newest'
 
   const [books,         setBooks]         = useState([])
   const [totalPages,    setTotalPages]    = useState(0)
@@ -31,6 +32,60 @@ export default function BookList() {
   const [categories,    setCategories]    = useState([])
   const [shopInput,     setShopInput]     = useState('')
   const [shopFilter,    setShopFilter]    = useState('')
+
+  // title/author search with suggestions
+  const [titleInput,    setTitleInput]    = useState(keyword)
+  const [suggestions,   setSuggestions]   = useState([])
+  const [showDrop,      setShowDrop]      = useState(false)
+  const searchRef  = useRef(null)
+  const timerRef   = useRef(null)
+
+  // sync titleInput when keyword changes from outside (e.g. header search)
+  useEffect(() => { setTitleInput(keyword) }, [keyword])
+
+  // click-outside closes dropdown
+  useEffect(() => {
+    const handler = (e) => { if (searchRef.current && !searchRef.current.contains(e.target)) setShowDrop(false) }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
+
+  const handleTitleChange = (e) => {
+    const val = e.target.value
+    setTitleInput(val)
+    clearTimeout(timerRef.current)
+    if (val.trim().length < 2) { setSuggestions([]); setShowDrop(false); return }
+    timerRef.current = setTimeout(() => {
+      booksApi.search({ keyword: val.trim(), size: 8 })
+        .then((res) => {
+          const items = res.data?.data?.content || []
+          setSuggestions(items)
+          setShowDrop(items.length > 0)
+        })
+        .catch(() => {})
+    }, 300)
+  }
+
+  const handleTitleSelect = (book) => {
+    setShowDrop(false)
+    navigate(`/books/${book.id}`)
+  }
+
+  const handleTitleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      setShowDrop(false)
+      setSearchParams((prev) => { prev.set('q', titleInput.trim()); prev.set('page', '0'); return prev })
+    } else if (e.key === 'Escape') {
+      setShowDrop(false)
+    }
+  }
+
+  const clearTitleSearch = () => {
+    setTitleInput('')
+    setSuggestions([])
+    setShowDrop(false)
+    setSearchParams((prev) => { prev.delete('q'); prev.set('page', '0'); return prev })
+  }
 
   // load categories once (for resolving categorySlug → id)
   useEffect(() => {
@@ -135,6 +190,46 @@ export default function BookList() {
           ))}
         </div>
       )}
+
+      {/* Title / author search with suggestions */}
+      <div ref={searchRef} className="relative mb-4 max-w-sm">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+        <input
+          value={titleInput}
+          onChange={handleTitleChange}
+          onKeyDown={handleTitleKeyDown}
+          onFocus={() => suggestions.length > 0 && setShowDrop(true)}
+          placeholder="Tìm theo tên sách, tác giả..."
+          className="w-full pl-9 pr-8 py-2 text-sm border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+        />
+        {titleInput && (
+          <button type="button" onClick={clearTitleSearch}
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+            <X className="h-3.5 w-3.5" />
+          </button>
+        )}
+        {showDrop && (
+          <div className="absolute left-0 right-0 top-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg z-50 overflow-hidden">
+            {suggestions.map((book) => (
+              <button
+                key={book.id}
+                onMouseDown={() => handleTitleSelect(book)}
+                className="w-full flex items-center gap-3 px-3 py-2 hover:bg-indigo-50 text-left transition-colors"
+              >
+                <img
+                  src={book.imageUrl || '/placeholder.png'}
+                  alt={book.title}
+                  className="h-10 w-7 object-cover rounded flex-shrink-0"
+                />
+                <div className="min-w-0">
+                  <p className="text-sm font-medium text-gray-900 truncate">{book.title}</p>
+                  <p className="text-xs text-gray-400 truncate">{book.author}</p>
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* Shop filter */}
       {!keyword && (
