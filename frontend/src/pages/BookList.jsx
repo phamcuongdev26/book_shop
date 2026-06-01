@@ -113,6 +113,7 @@ export default function BookList() {
     clearTimeout(titleTimer.current)
     if (!val.trim()) { setTitleFilter(''); setTitleSuggestions([]); setShowTitleDrop(false); return }
     titleTimer.current = setTimeout(() => {
+      setTitleFilter(val.trim())
       booksApi.filter({ title: val.trim(), size: 8 })
         .then((res) => {
           const items = res.data?.data?.content || []
@@ -144,6 +145,7 @@ export default function BookList() {
     clearTimeout(authorTimer.current)
     if (!val.trim()) { setAuthorFilter(''); setAuthorSuggestions([]); setShowAuthorDrop(false); return }
     authorTimer.current = setTimeout(() => {
+      setAuthorFilter(val.trim())
       booksApi.filter({ author: val.trim(), size: 8 })
         .then((res) => {
           const items = res.data?.data?.content || []
