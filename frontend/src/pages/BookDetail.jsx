@@ -35,7 +35,7 @@ function CheckoutModal({ book, qty, onClose }) {
   const validate = () => {
     const e = {}
     if (form.recipientName.trim().length < 2) e.recipientName = 'Vui lòng nhập họ tên (ít nhất 2 ký tự)'
-    if (!/^0[0-9]{9}$/.test(form.recipientPhone.replace(/\s/g, ''))) e.recipientPhone = 'Số điện thoại không hợp lệ (10 số, bắt đầu 0)'
+    if (!form.recipientPhone.trim()) e.recipientPhone = 'Vui lòng nhập số điện thoại'
     if (form.shippingAddress.trim().length < 10) e.shippingAddress = 'Địa chỉ quá ngắn (ít nhất 10 ký tự)'
     return e
   }
