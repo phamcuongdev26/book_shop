@@ -68,6 +68,7 @@ public class SecurityConfig {
                         // Public API
                         .requestMatchers(HttpMethod.POST, "/api/auth/register", "/api/auth/login", "/api/auth/logout").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/books", "/api/books/**", "/api/categories", "/api/categories/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/reviews/book/*").permitAll()
                         // Admin only
                         .requestMatchers("/api/admin/**").hasAuthority("SCOPE_ADMIN")
                         // Admin và Seller

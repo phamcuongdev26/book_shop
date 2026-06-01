@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { ShoppingCart, ArrowLeft, Star, Package, BookOpenCheck, Zap, X, User, Phone, MapPin, CreditCard, FileText, Check } from 'lucide-react'
+import { ShoppingCart, ArrowLeft, Star, Package, BookOpenCheck, Zap, X, User, Phone, MapPin, CreditCard, FileText, Check, MessageSquare } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { booksApi } from '../api/books'
 import { cartApi } from '../api/cart'
 import { ordersApi } from '../api/orders'
+import { reviewsApi } from '../api/reviews'
 import { PageSpinner } from '../components/ui/Spinner'
 import { useAuth } from '../context/AuthContext'
 
@@ -168,6 +169,153 @@ function CheckoutModal({ book, qty, onClose }) {
   )
 }
 
+function StarPicker({ value, onChange }) {
+  const [hover, setHover] = useState(0)
+  return (
+    <div className="flex items-center gap-1">
+      {[1, 2, 3, 4, 5].map(s => (
+        <button key={s} type="button"
+          onClick={() => onChange(s)}
+          onMouseEnter={() => setHover(s)}
+          onMouseLeave={() => setHover(0)}
+          className="p-0.5 focus:outline-none">
+          <Star className={`h-7 w-7 transition-colors ${(hover || value) >= s ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} />
+        </button>
+      ))}
+      {value > 0 && (
+        <span className="ml-1 text-sm text-gray-500">
+          {['', 'Tệ', 'Không thích', 'Bình thường', 'Tốt', 'Tuyệt vời'][value]}
+        </span>
+      )}
+    </div>
+  )
+}
+
+function ReviewSection({ bookId, isAuthenticated }) {
+  const [reviews, setReviews] = useState([])
+  const [status, setStatus] = useState(null)
+  const [form, setForm] = useState({ rating: 0, comment: '' })
+  const [submitting, setSubmitting] = useState(false)
+
+  const loadAll = async () => {
+    try {
+      const r = await reviewsApi.getBookReviews(bookId)
+      setReviews(r.data.result || [])
+    } catch { /* ignore */ }
+    if (isAuthenticated) {
+      try {
+        const s = await reviewsApi.getMyStatus(bookId)
+        setStatus(s.data.result)
+      } catch { /* ignore */ }
+    }
+  }
+
+  useEffect(() => { loadAll() }, [bookId, isAuthenticated])
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    if (form.rating === 0) { toast.error('Vui lòng chọn số sao đánh giá'); return }
+    setSubmitting(true)
+    try {
+      await reviewsApi.createReview(bookId, form)
+      toast.success('Đã gửi đánh giá!')
+      setForm({ rating: 0, comment: '' })
+      await loadAll()
+    } catch (err) {
+      toast.error(err?.response?.data?.message || 'Gửi đánh giá thất bại')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const fmtDate = (s) => new Date(s).toLocaleDateString('vi-VN')
+
+  return (
+    <div className="mt-12 border-t border-gray-100 pt-8">
+      <div className="flex items-center gap-2 mb-6">
+        <MessageSquare className="h-5 w-5 text-indigo-500" />
+        <h2 className="text-lg font-bold text-gray-900">Đánh giá từ độc giả</h2>
+        {reviews.length > 0 && (
+          <span className="text-sm text-gray-400">({reviews.length} đánh giá)</span>
+        )}
+      </div>
+
+      {/* Review form */}
+      {isAuthenticated && status?.canReview && (
+        <form onSubmit={handleSubmit} className="bg-indigo-50 border border-indigo-100 rounded-2xl p-5 mb-6 space-y-3">
+          <p className="text-sm font-semibold text-indigo-700">Viết đánh giá của bạn</p>
+          <StarPicker value={form.rating} onChange={r => setForm(f => ({ ...f, rating: r }))} />
+          <textarea
+            value={form.comment}
+            onChange={e => setForm(f => ({ ...f, comment: e.target.value }))}
+            placeholder="Chia sẻ cảm nhận về cuốn sách... (không bắt buộc)"
+            maxLength={1000}
+            rows={3}
+            className="w-full px-3 py-2.5 text-sm border border-indigo-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none"
+          />
+          <div className="flex items-center justify-between">
+            <span className="text-xs text-gray-400">{form.comment.length}/1000</span>
+            <button type="submit" disabled={submitting}
+              className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white text-sm font-semibold rounded-xl transition-colors">
+              {submitting ? 'Đang gửi...' : 'Gửi đánh giá'}
+            </button>
+          </div>
+        </form>
+      )}
+
+      {/* Already reviewed */}
+      {status?.myReview && (
+        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-6">
+          <p className="text-xs font-semibold text-amber-600 mb-2">Đánh giá của bạn</p>
+          <div className="flex items-center gap-0.5 mb-1">
+            {[1,2,3,4,5].map(s => (
+              <Star key={s} className={`h-4 w-4 ${s <= status.myReview.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-200'}`} />
+            ))}
+          </div>
+          {status.myReview.comment && (
+            <p className="text-sm text-gray-700 mt-1">{status.myReview.comment}</p>
+          )}
+          <p className="text-xs text-gray-400 mt-1">{fmtDate(status.myReview.createdAt)}</p>
+        </div>
+      )}
+
+      {/* Not purchased prompt */}
+      {isAuthenticated && status && !status.hasPurchased && (
+        <div className="bg-gray-50 rounded-xl p-4 mb-6 text-sm text-gray-500 text-center">
+          Mua và nhận sách này để có thể viết đánh giá.
+        </div>
+      )}
+
+      {/* Reviews list */}
+      {reviews.length === 0 ? (
+        <p className="text-sm text-gray-400 text-center py-8">Chưa có đánh giá nào. Hãy là người đầu tiên!</p>
+      ) : (
+        <div className="space-y-4">
+          {reviews.map(r => (
+            <div key={r.id} className="border border-gray-100 rounded-xl p-4">
+              <div className="flex items-center justify-between mb-1.5">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-xs font-bold text-indigo-600">
+                    {(r.fullName || r.username)[0].toUpperCase()}
+                  </div>
+                  <span className="text-sm font-semibold text-gray-800">{r.fullName || r.username}</span>
+                </div>
+                <span className="text-xs text-gray-400">{fmtDate(r.createdAt)}</span>
+              </div>
+              <div className="flex items-center gap-0.5 mb-2">
+                {[1,2,3,4,5].map(s => (
+                  <Star key={s} className={`h-3.5 w-3.5 ${s <= r.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-200'}`} />
+                ))}
+              </div>
+              {r.comment && <p className="text-sm text-gray-600 leading-relaxed">{r.comment}</p>}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function BookDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -321,6 +469,8 @@ export default function BookDetail() {
             <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-line">{book.description}</p>
           </div>
         )}
+
+        <ReviewSection bookId={book.id} isAuthenticated={isAuthenticated} />
       </div>
     </>
   )

@@ -41,4 +41,13 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             """)
     List<Order> findBySellerIdAndStatusOrderByCreatedAtDesc(@Param("sellerId") Long sellerId,
                                                             @Param("status") OrderStatus status);
+
+    @Query("""
+            SELECT CASE WHEN COUNT(o) > 0 THEN true ELSE false END
+            FROM Order o JOIN o.items i
+            WHERE o.user.id = :userId AND i.book.id = :bookId AND o.status = :status
+            """)
+    boolean existsByUserAndBookAndStatus(@Param("userId") Long userId,
+                                         @Param("bookId") Long bookId,
+                                         @Param("status") OrderStatus status);
 }
