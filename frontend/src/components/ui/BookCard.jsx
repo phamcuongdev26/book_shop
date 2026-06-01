@@ -33,7 +33,7 @@ export function BookCard({ book, colorIndex = 0 }) {
         <img
           src={book.imageUrl || PLACEHOLDER}
           alt={book.title}
-          style={{ position: 'absolute', inset: '-15%', width: '130%', height: '130%', objectFit: 'cover' }}
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
           className="group-hover:scale-105 transition-transform duration-300"
           onError={(e) => { e.target.src = PLACEHOLDER }}
         />
