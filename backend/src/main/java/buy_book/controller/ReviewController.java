@@ -42,6 +42,25 @@ public class ReviewController {
                 .build());
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<ReviewResponse>> updateReview(
+            @PathVariable Long id,
+            @RequestBody @Valid ReviewRequest request,
+            @AuthenticationPrincipal Jwt jwt) {
+        ReviewResponse review = reviewService.updateReview(id, jwt.getSubject(), request);
+        return ResponseEntity.ok(ApiResponse.<ReviewResponse>builder()
+                .code(200).result(review).build());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> deleteReview(
+            @PathVariable Long id,
+            @AuthenticationPrincipal Jwt jwt) {
+        reviewService.deleteReview(id, jwt.getSubject());
+        return ResponseEntity.ok(ApiResponse.<Void>builder()
+                .code(200).message("Đã xóa đánh giá").build());
+    }
+
     @GetMapping("/book/{bookId}/my-status")
     public ResponseEntity<ApiResponse<ReviewStatusResponse>> getMyStatus(
             @PathVariable Long bookId,

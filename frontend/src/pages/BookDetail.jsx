@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { ShoppingCart, ArrowLeft, Star, Package, BookOpenCheck, Zap, X, User, Phone, MapPin, CreditCard, FileText, Check, MessageSquare } from 'lucide-react'
+import { ShoppingCart, ArrowLeft, Star, Package, BookOpenCheck, Zap, X, User, Phone, MapPin, CreditCard, FileText, Check, MessageSquare, Pencil, Trash2 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { booksApi } from '../api/books'
 import { cartApi } from '../api/cart'
@@ -196,6 +196,9 @@ function ReviewSection({ bookId, isAuthenticated }) {
   const [status, setStatus] = useState(null)
   const [form, setForm] = useState({ rating: 0, comment: '' })
   const [submitting, setSubmitting] = useState(false)
+  const [editing, setEditing] = useState(false)
+  const [editForm, setEditForm] = useState({ rating: 0, comment: '' })
+  const [editSubmitting, setEditSubmitting] = useState(false)
 
   const loadAll = async () => {
     try {
@@ -223,8 +226,37 @@ function ReviewSection({ bookId, isAuthenticated }) {
       await loadAll()
     } catch (err) {
       toast.error(err?.response?.data?.message || 'Gửi đánh giá thất bại')
-    } finally {
-      setSubmitting(false)
+    } finally { setSubmitting(false) }
+  }
+
+  const startEdit = () => {
+    setEditForm({ rating: status.myReview.rating, comment: status.myReview.comment || '' })
+    setEditing(true)
+  }
+
+  const handleUpdate = async (e) => {
+    e.preventDefault()
+    if (editForm.rating === 0) { toast.error('Vui lòng chọn số sao'); return }
+    setEditSubmitting(true)
+    try {
+      await reviewsApi.updateReview(status.myReview.id, editForm)
+      toast.success('Đã cập nhật đánh giá!')
+      setEditing(false)
+      await loadAll()
+    } catch (err) {
+      toast.error(err?.response?.data?.message || 'Cập nhật thất bại')
+    } finally { setEditSubmitting(false) }
+  }
+
+  const handleDelete = async () => {
+    if (!window.confirm('Xóa đánh giá này?')) return
+    try {
+      await reviewsApi.deleteReview(status.myReview.id)
+      toast.success('Đã xóa đánh giá')
+      setEditing(false)
+      await loadAll()
+    } catch (err) {
+      toast.error(err?.response?.data?.message || 'Xóa thất bại')
     }
   }
 
@@ -240,7 +272,7 @@ function ReviewSection({ bookId, isAuthenticated }) {
         )}
       </div>
 
-      {/* Review form */}
+      {/* Create form */}
       {isAuthenticated && status?.canReview && (
         <form onSubmit={handleSubmit} className="bg-indigo-50 border border-indigo-100 rounded-2xl p-5 mb-6 space-y-3">
           <p className="text-sm font-semibold text-indigo-700">Viết đánh giá của bạn</p>
@@ -249,8 +281,7 @@ function ReviewSection({ bookId, isAuthenticated }) {
             value={form.comment}
             onChange={e => setForm(f => ({ ...f, comment: e.target.value }))}
             placeholder="Chia sẻ cảm nhận về cuốn sách... (không bắt buộc)"
-            maxLength={1000}
-            rows={3}
+            maxLength={1000} rows={3}
             className="w-full px-3 py-2.5 text-sm border border-indigo-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none"
           />
           <div className="flex items-center justify-between">
@@ -263,19 +294,56 @@ function ReviewSection({ bookId, isAuthenticated }) {
         </form>
       )}
 
-      {/* Already reviewed */}
+      {/* My review – view or edit */}
       {status?.myReview && (
         <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-6">
-          <p className="text-xs font-semibold text-amber-600 mb-2">Đánh giá của bạn</p>
-          <div className="flex items-center gap-0.5 mb-1">
-            {[1,2,3,4,5].map(s => (
-              <Star key={s} className={`h-4 w-4 ${s <= status.myReview.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-200'}`} />
-            ))}
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-xs font-semibold text-amber-600">Đánh giá của bạn</p>
+            {!editing && (
+              <div className="flex items-center gap-1">
+                <button onClick={startEdit}
+                  className="flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-800 px-2 py-1 rounded-lg hover:bg-indigo-50 transition-colors">
+                  <Pencil className="h-3 w-3" /> Sửa
+                </button>
+                <button onClick={handleDelete}
+                  className="flex items-center gap-1 text-xs text-red-500 hover:text-red-700 px-2 py-1 rounded-lg hover:bg-red-50 transition-colors">
+                  <Trash2 className="h-3 w-3" /> Xóa
+                </button>
+              </div>
+            )}
           </div>
-          {status.myReview.comment && (
-            <p className="text-sm text-gray-700 mt-1">{status.myReview.comment}</p>
+
+          {editing ? (
+            <form onSubmit={handleUpdate} className="space-y-3">
+              <StarPicker value={editForm.rating} onChange={r => setEditForm(f => ({ ...f, rating: r }))} />
+              <textarea
+                value={editForm.comment}
+                onChange={e => setEditForm(f => ({ ...f, comment: e.target.value }))}
+                maxLength={1000} rows={3}
+                className="w-full px-3 py-2 text-sm border border-amber-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-amber-400 resize-none"
+              />
+              <div className="flex items-center gap-2 justify-end">
+                <button type="button" onClick={() => setEditing(false)}
+                  className="px-4 py-1.5 text-sm text-gray-600 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
+                  Hủy
+                </button>
+                <button type="submit" disabled={editSubmitting}
+                  className="px-4 py-1.5 text-sm bg-amber-500 hover:bg-amber-600 disabled:bg-amber-300 text-white font-semibold rounded-xl transition-colors">
+                  {editSubmitting ? 'Đang lưu...' : 'Lưu'}
+                </button>
+              </div>
+            </form>
+          ) : (
+            <>
+              <div className="flex items-center gap-0.5 mb-1">
+                {[1,2,3,4,5].map(s => (
+                  <Star key={s} className={`h-4 w-4 ${s <= status.myReview.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-200'}`} />
+                ))}
+              </div>
+              {status.myReview.comment && <p className="text-sm text-gray-700 mt-1">{status.myReview.comment}</p>}
+              <p className="text-xs text-gray-400 mt-1">{fmtDate(status.myReview.createdAt)}</p>
+            </>
           )}
-          <p className="text-xs text-gray-400 mt-1">{fmtDate(status.myReview.createdAt)}</p>
         </div>
       )}
 

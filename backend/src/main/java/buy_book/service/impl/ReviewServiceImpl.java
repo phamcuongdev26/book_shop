@@ -52,12 +52,48 @@ public class ReviewServiceImpl implements ReviewService {
                 .comment(request.getComment())
                 .build();
         reviewRepository.save(review);
+        recalcAvgRating(book);
+        return toResponse(review);
+    }
 
-        Double avg = reviewRepository.avgRatingByBookId(bookId);
+    @Override
+    @Transactional
+    public ReviewResponse updateReview(Long reviewId, String username, ReviewRequest request) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy đánh giá."));
+        if (!review.getUser().getId().equals(user.getId()))
+            throw new AppException(ErrorCode.UNAUTHORIZED);
+
+        review.setRating(request.getRating());
+        review.setComment(request.getComment());
+        reviewRepository.save(review);
+
+        recalcAvgRating(review.getBook());
+        return toResponse(review);
+    }
+
+    @Override
+    @Transactional
+    public void deleteReview(Long reviewId, String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy đánh giá."));
+        if (!review.getUser().getId().equals(user.getId()))
+            throw new AppException(ErrorCode.UNAUTHORIZED);
+
+        Book book = review.getBook();
+        reviewRepository.delete(review);
+        reviewRepository.flush();
+        recalcAvgRating(book);
+    }
+
+    private void recalcAvgRating(Book book) {
+        Double avg = reviewRepository.avgRatingByBookId(book.getId());
         book.setAvgRating(avg != null ? Math.round(avg * 10.0) / 10.0 : 0.0);
         bookRepository.save(book);
-
-        return toResponse(review);
     }
 
     @Override
