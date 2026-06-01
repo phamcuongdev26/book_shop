@@ -16,14 +16,13 @@ const SECTION_TITLES = {
   'qua-tang':        'Quà Tặng',
 }
 
-function FilterInput({ placeholder, value, onChange, onClear, suggestions, showDrop, onSelect, containerRef }) {
+function FilterInput({ placeholder, value, onChange, onClear, suggestions, showDrop, onSelect, containerRef, mode = 'book' }) {
   return (
     <div ref={containerRef} className="relative flex-1 min-w-0">
       <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
       <input
         value={value}
         onChange={onChange}
-        onFocus={() => {}}
         placeholder={placeholder}
         className="w-full pl-9 pr-8 py-2 text-sm border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-400"
       />
@@ -35,23 +34,34 @@ function FilterInput({ placeholder, value, onChange, onClear, suggestions, showD
       )}
       {showDrop && suggestions.length > 0 && (
         <div className="absolute left-0 right-0 top-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg z-50 overflow-hidden">
-          {suggestions.map((item) => (
-            <button
-              key={item.id}
-              onMouseDown={() => onSelect(item)}
-              className="w-full flex items-center gap-3 px-3 py-2 hover:bg-indigo-50 text-left transition-colors"
-            >
-              <img
-                src={item.imageUrl || '/placeholder.png'}
-                alt={item.title}
-                className="h-10 w-7 object-cover rounded flex-shrink-0"
-              />
-              <div className="min-w-0">
-                <p className="text-sm font-medium text-gray-900 truncate">{item.title}</p>
-                <p className="text-xs text-gray-400 truncate">{item.author}</p>
-              </div>
-            </button>
-          ))}
+          {mode === 'author'
+            ? suggestions.map((item, idx) => (
+                <button
+                  key={idx}
+                  onMouseDown={() => onSelect(item)}
+                  className="w-full flex items-center gap-2 px-4 py-2.5 hover:bg-indigo-50 text-left transition-colors"
+                >
+                  <span className="text-sm text-gray-800">{item.author}</span>
+                </button>
+              ))
+            : suggestions.map((item) => (
+                <button
+                  key={item.id}
+                  onMouseDown={() => onSelect(item)}
+                  className="w-full flex items-center gap-3 px-3 py-2 hover:bg-indigo-50 text-left transition-colors"
+                >
+                  <img
+                    src={item.imageUrl || '/placeholder.png'}
+                    alt={item.title}
+                    className="h-10 w-7 object-cover rounded flex-shrink-0"
+                  />
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-gray-900 truncate">{item.title}</p>
+                    <p className="text-xs text-gray-400 truncate">{item.author}</p>
+                  </div>
+                </button>
+              ))
+          }
         </div>
       )}
     </div>
@@ -146,11 +156,17 @@ export default function BookList() {
     if (!val.trim()) { setAuthorFilter(''); setAuthorSuggestions([]); setShowAuthorDrop(false); return }
     authorTimer.current = setTimeout(() => {
       setAuthorFilter(val.trim())
-      booksApi.filter({ author: val.trim(), size: 8 })
+      booksApi.search({ keyword: val.trim(), size: 20 })
         .then((res) => {
-          const items = res.data?.data?.content || []
-          setAuthorSuggestions(items)
-          setShowAuthorDrop(items.length > 0)
+          const all = res.data?.data?.content || []
+          const kw = val.trim().toLowerCase()
+          const seen = new Set()
+          const unique = all
+            .filter(b => b.author && b.author.toLowerCase().includes(kw))
+            .filter(b => { if (seen.has(b.author)) return false; seen.add(b.author); return true })
+            .slice(0, 7)
+          setAuthorSuggestions(unique)
+          setShowAuthorDrop(unique.length > 0)
         })
         .catch(() => {})
     }, 300)
@@ -295,6 +311,7 @@ export default function BookList() {
           showDrop={showAuthorDrop}
           onSelect={selectAuthor}
           containerRef={authorRef}
+          mode="author"
         />
       </div>
 
