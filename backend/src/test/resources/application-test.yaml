@@ -1,0 +1,55 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: false
+  sql:
+    init:
+      mode: never
+
+RSA_PRIVATE_KEY: |
+  -----BEGIN PRIVATE KEY-----
+  MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCzNW8hR8t1+JQQ
+  hcPQtyRAZsw5fUrEFBZbaWwIjRj1wv6daavN4yzmbe4pVAVb5GuEfVp6xolAbGmw
+  pNdeq7FMGlfIzP0bvSL7+BLiMQwHf3aF7ABUKdK2kQXY4XoajFaNuTNuhKGPY7pY
+  tzDj5XrcseMFZDXAA6mHMqjKXKIP3ovMwbzllqA5Dn0xpCzhHC1mhiv0M0tfw9pN
+  two78B0OCMRXdh5Tg4ur7LPNLkzohJt9vMbcOx6w/bI6jo7g+PAepK0DWiLHTMRj
+  PisF9/HhRB3otutJsGvr+jc5SeJUaTErv7EBoqHz0ynNswGYA7p9iDxZhqPC+GOg
+  GLsidUvVAgMBAAECggEAf3mw9UF2rxIFcMNWCO9dcBovh21ic5u+U4Pn/yUu7hKo
+  vxxdw3SniboEwY0syrLu8C2i4Na85wC3JZn8QTFsSrAqZYG7QbIGYqmR9SfiYKsA
+  ij7X9QZTBt6eBCpPivbs0p88wI7DxZWxBk45DsM75CT9UeZ4fX+dZbhZbKj79sCs
+  VogfxWIekrVnPRofbYYBWh+gCu4Cv9QrBdDg6gonr7zIxircVKO2y3KGxliBDeqh
+  g1iCl3grFipKADXYGiMlf7NvXEGx7BUQscjj+BDEzUAmeug/nra8l51tH6Pe+/F9
+  jhkisScizg6hOkv+T7YtRTlgDEYrcWiwDF81i3tlQQKBgQDdqLmZPu8SyO5Q8xF9
+  0CmJSr378e9wT7a3ZD0E2LHMjYuG+cplGao5oX3xE5RF7lHt811+ZVkz61rpyhsp
+  TLQlszsWrtNE22rPnCwfRd++V3KZ2d8I4wB2PZ1NkapK+/KoKY4JmR5prY1IZ1d4
+  U4I6RcoJ9WJB1ZHz25evEGzT/QKBgQDO+RNAlSX82ANMk0P3dNF6mn9Cof0jgbVH
+  lX234F2SwFGzZMoqVJeMDpOx4ipYep9eHMjtgRenPIdsd0LRWrNYrRtfTsFIqk81
+  qOntQbMQ8THvoSc7mUtkrBQR95LFT1g5pgWWFjCTDW29xCqotpUWw25Bpfjp8RFV
+  TdO/q3KiuQKBgQCoxK3D05oeGGTzt46q15K4mPL8YKIpRlhdW/HlvcPqdh81Pv1u
+  atMkHCSTKJAtip5Q6YpXEX2QvXM0LJDvqhpD1ip4Q9ZSSCoUNtmVWhNYjqaQI8Xg
+  s04HuTQK+ozJmPmSNkmSX0Y7ukunRB/iWtr92WNSn8YXUDBXluvv/DaQVQKBgBmG
+  6NP3UUcdEVMZerGDi+6WLYn3VrRRZB1fF7FdD81wwOLiVHjiFArnJVo0LcrZ3NwL
+  qtB4MoWi1oUPNIODr0kJmK2plfczYi+ZFLj5eG9ngCQw+RjFsGHLQ3Jv2X9SaOw7
+  SMcZF4abimR0VFqYoky7b9bS9J9N5zhhL/Oc3repAoGATjFX/1J/9oFNlg+G/bGT
+  EdeL9DdAsshD0zYAS1QZpodzlxuZ7mJhouz8Vrstt/RV78ClqrrpN/uVaBC+2cv/
+  f8p6uHhzr/vdmxOMvzZMUixayOfDoUaGAarT/I/ju7pe0r2QJb37sSQLE7G2fKOG
+  31SliZsL6+Ch7J1ShcPtqHw=
+  -----END PRIVATE KEY-----
+
+RSA_PUBLIC_KEY: |
+  -----BEGIN PUBLIC KEY-----
+  MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAszVvIUfLdfiUEIXD0Lck
+  QGbMOX1KxBQWW2lsCI0Y9cL+nWmrzeMs5m3uKVQFW+RrhH1aesaJQGxpsKTXXqux
+  TBpXyMz9G70i+/gS4jEMB392hewAVCnStpEF2OF6GoxWjbkzboShj2O6WLcw4+V6
+  3LHjBWQ1wAOphzKoylyiD96LzMG85ZagOQ59MaQs4RwtZoYr9DNLX8PaTbcKO/Ad
+  DgjEV3YeU4OLq+yzzS5M6ISbfbzG3DsesP2yOo6O4PjwHqStA1oix0zEYz4rBffx
+  4UQd6LbrSbBr6/o3OUniVGkxK7+xAaKh89MpzbMBmAO6fYg8WYajwvhjoBi7InVL
+  1QIDAQAB
+  -----END PUBLIC KEY-----
