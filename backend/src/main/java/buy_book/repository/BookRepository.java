@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -42,4 +43,9 @@ public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificat
     List<Book> findBySellerIdOrderByCreatedAtDesc(Long sellerId);
 
     long countBySellerId(Long sellerId);
+
+    @Modifying
+    @Query("UPDATE Book b SET b.stockQuantity = b.stockQuantity - :quantity, b.totalSold = b.totalSold + :quantity " +
+           "WHERE b.id = :bookId AND b.stockQuantity >= :quantity")
+    int decrementStock(@Param("bookId") Long bookId, @Param("quantity") int quantity);
 }

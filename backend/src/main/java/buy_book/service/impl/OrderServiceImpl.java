@@ -75,13 +75,10 @@ public class OrderServiceImpl implements OrderService {
             Book book = cartItem.getBook();
 
             if (!book.isActive()) throw new AppException(ErrorCode.BOOK_INACTIVE);
-            if (book.getStockQuantity() < cartItem.getQuantity())
-                throw new AppException(ErrorCode.OUT_OF_STOCK);
 
-            // Trừ tồn kho
-            book.setStockQuantity(book.getStockQuantity() - cartItem.getQuantity());
-            book.setTotalSold(book.getTotalSold() + cartItem.getQuantity());
-            bookRepository.save(book);
+            // Atomic decrement: chỉ trừ kho nếu còn đủ hàng, tránh race condition oversell
+            int updated = bookRepository.decrementStock(book.getId(), cartItem.getQuantity());
+            if (updated == 0) throw new AppException(ErrorCode.OUT_OF_STOCK);
 
             BigDecimal unitPrice = book.getDiscountPrice() != null
                     ? book.getDiscountPrice() : book.getPrice();
